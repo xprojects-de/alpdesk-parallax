@@ -60,6 +60,7 @@ class HooksListener {
         $templateBackgroundImage->hAlign = ($arrData['hAlign'] != '') ? $arrData['hAlign'] : 'center';
         $templateBackgroundImage->vAlign = ($arrData['vAlign'] != '') ? $arrData['vAlign'] : 'center';
         $templateBackgroundImage->sizemodus = ($arrData['sizemodus'] != '') ? $arrData['sizemodus'] : 'auto';
+        $templateBackgroundImage->vParallax = ($arrData['vParallax'] != '') ? $arrData['vParallax'] : '0';
         $elements = $objTemplate->elements;
         array_unshift($elements, $templateBackgroundImage->parse());
         $objTemplate->elements = $elements;
