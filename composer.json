@@ -1,0 +1,42 @@
+{
+  "name": "alpdesk/alpdesk-parallax",
+  "description": "Parallax for Contao 4",
+  "keywords": ["contao", "alpdesk", "Parallax"],
+  "type": "contao-bundle",
+  "homepage": "https://github.com/xprojects-de/alpdesk-parallax",
+  "version": "0.0.1",
+  "license": "LGPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "XProjects",
+      "homepage": "https://x-projects.de",
+      "email": "infos@x-projects.de",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/xprojects-de/alpdesk-parallax/issues"
+  },
+  "require": {
+    "php": ">=7.2",
+    "contao/core-bundle": "^4.9"
+  },
+  "conflict": {
+    "contao/manager-plugin": "<2.0 || >=3.0"
+  },
+  "require-dev": {
+    "contao/manager-plugin": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Alpdesk\\AlpdeskParallax\\": "src/"
+    }
+  },
+  "extra": {
+    "contao-manager-plugin": "Alpdesk\\AlpdeskParallax\\ContaoManager\\Plugin",
+    "contao-component-dir": "public"
+  },
+  "config": {
+    "contao-component-dir": "public"
+  }
+}

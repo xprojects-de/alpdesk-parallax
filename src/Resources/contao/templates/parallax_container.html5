@@ -1,0 +1,9 @@
+<div class="parallax-bgimage"
+     data-isparallax="<?= $this->isParallax ?>"
+     data-src="<?= $this->src ?>"
+     data-srcheight="<?= $this->srcHeight ?>"
+     data-srcwidth="<?= $this->srcWidth ?>"
+     data-sizemodus="<?= $this->sizemodus ?>"
+     data-valign="<?= $this->vAlign ?>"
+     data-halign="<?= $this->hAlign ?>">
+</div>
