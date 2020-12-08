@@ -8,8 +8,16 @@ PaletteManipulator::create()
         ->addField('hasParallaxBackgroundImage', 'backgroundparallaximage_legend', PaletteManipulator::POSITION_APPEND)
         ->applyToPalette('default', 'tl_article');
 
+PaletteManipulator::create()
+        ->addLegend('animationeffect_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
+        ->addField('hasAnimationeffects', 'animationeffect_legend', PaletteManipulator::POSITION_APPEND)
+        ->applyToPalette('default', 'tl_article');
+
 $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasParallaxBackgroundImage';
 $GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasParallaxBackgroundImage'] = 'singleSRC,size,sizemodus,hAlign,vAlign,vParallax,isParallax';
+
+$GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasAnimationeffects';
+$GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasAnimationeffects'] = 'animationeffects';
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['hasParallaxBackgroundImage'] = array
     (
@@ -108,3 +116,65 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['isParallax'] = array
     ),
     'sql' => "char(1) NOT NULL default ''"
 );
+
+$GLOBALS['TL_DCA']['tl_article']['fields']['hasAnimationeffects'] = array
+    (
+    'label' => &$GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => array(
+        'submitOnChange' => true,
+    ),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_article']['fields']['animationeffects'] = array(
+    'label' => &$GLOBALS['TL_LANG']['tl_article']['animationeffects'],
+    'exclude' => true,
+    'inputType' => 'multiColumnWizard',
+    'eval' => [
+        'dragAndDrop' => true,
+        'columnFields' => [
+            'animation_image' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_image'],
+                'exclude' => true,
+                'inputType' => 'fileTree',
+                'eval' => ['multiple' => false, 'fieldType' => 'radio', 'filesOnly' => true, 'extensions' => 'jpg,png,jpeg,gif'],
+            ],
+            'animation_viewport' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_viewport'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'],
+            ],
+            'animation_startposition' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_startposition'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_startposition_options'],
+            ],
+            'animation_effect' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_effect'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_effect_options'],
+                'eval' => ['includeBlankOption' => true],
+            ],
+            'animation_fade' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_fade'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_fade_options'],
+                'eval' => ['includeBlankOption' => true],
+            ],
+            'animation_speed' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_speed'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_speed_options'],
+            ]
+        ],
+    ],
+    'sql' => 'blob NULL',
+);
+

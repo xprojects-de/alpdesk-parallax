@@ -18,7 +18,8 @@
   },
   "require": {
     "php": ">=7.2",
-    "contao/core-bundle": "^4.9"
+    "contao/core-bundle": "^4.9",
+    "menatwork/contao-multicolumnwizard-bundle": "^3.4"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"

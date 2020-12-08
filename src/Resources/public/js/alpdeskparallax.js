@@ -2,7 +2,7 @@ $(document).ready(function () {
 
   (function () {
 
-    $.fn.isInViewport = function () {
+    $.fn.isInParallaxViewport = function () {
       var elementTop = $(this).offset().top;
       var elementBottom = elementTop + $(this).outerHeight();
       var viewportTop = $(window).scrollTop();
@@ -27,7 +27,7 @@ $(document).ready(function () {
       for (var i = 0; i < parallaxElements.length; i++) {
         var parent = parallaxElements[i].node.parentNode;
         if ($(parent).hasClass('parallax')) {
-          if ($(parent).isInViewport() && !checkVisibleExists(parallaxElements[i].node)) {
+          if ($(parent).isInParallaxViewport() && !checkVisibleExists(parallaxElements[i].node)) {
             visibleElements.push({
               node: parallaxElements[i].node,
               vAlign: parallaxElements[i].vAlign,
