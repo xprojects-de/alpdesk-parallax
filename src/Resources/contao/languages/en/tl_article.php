@@ -30,10 +30,10 @@ $GLOBALS['TL_LANG']['tl_article']['vParallax_options'] = array(
     'right' => 'move right'
 );
 
-$GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'] = array('activate Animation-Effects', '');
+$GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'] = array('activate Animations-Effekte', '');
 $GLOBALS['TL_LANG']['tl_article']['animationeffects'] = array('Animations-Effects', '');
 $GLOBALS['TL_LANG']['tl_article']['animation_image'] = array('Image', 'Please select an image');
-$GLOBALS['TL_LANG']['tl_article']['animation_viewport'] = array('Viewport-Offset', 'Please select from which offset the effect should start');
+$GLOBALS['TL_LANG']['tl_article']['animation_viewport'] = array('Viewport-Offset', 'Please select an offset');
 $GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'] = array(
     '0' => 'Viewport + 0 percent',
     '10' => 'Viewport + 10 percent',
@@ -44,14 +44,35 @@ $GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'] = array(
     '60' => 'Viewport + 60 percent',
     '70' => 'Viewport + 70 percent',
     '80' => 'Viewport + 80 percent',
-    '90' => 'Viewport + 90 percent'
+    '90' => 'Viewport + 90 percent',
+    '95' => 'Viewport + 95 percent'
 );
-$GLOBALS['TL_LANG']['tl_article']['animation_effect'] = array('Effect', 'Please select an effect');
+$GLOBALS['TL_LANG']['tl_article']['animation_startposition'] = array('Startposition', 'Please select a position');
+$GLOBALS['TL_LANG']['tl_article']['animation_startposition_options'] = array(
+    's1' => 'top/left',
+    's2' => 'top/middle',
+    's3' => 'top/right',
+    's4' => 'bottom/left',
+    's5' => 'bottom/middle',
+    's6' => 'bottom/right',
+    's7' => 'middle/middle',
+);
+$GLOBALS['TL_LANG']['tl_article']['animation_effect'] = array('Motion-Effect', 'Please select an effect');
 $GLOBALS['TL_LANG']['tl_article']['animation_effect_options'] = array(
-    'e1' => 'move from left top to bottom right',
-    'e2' => 'move from right top to bottom left',
+    'e1' => 'top/left',
+    'e2' => 'top/middle',
+    'e3' => 'top/right',
+    'e4' => 'bottom/left',
+    'e5' => 'bottom/middle',
+    'e6' => 'bottom/right',
+    'e7' => 'middle/middle',
 );
-$GLOBALS['TL_LANG']['tl_article']['animation_speed'] = array('Effect-Speed', 'Please select a speed option');
+$GLOBALS['TL_LANG']['tl_article']['animation_fade'] = array('Fade-Effect', 'Please select an effect');
+$GLOBALS['TL_LANG']['tl_article']['animation_fade_options'] = array(
+    'f1' => 'fadeIn',
+    'f2' => 'fadeOut',
+);
+$GLOBALS['TL_LANG']['tl_article']['animation_speed'] = array('Effect-Speed', 'Please select a speed');
 $GLOBALS['TL_LANG']['tl_article']['animation_speed_options'] = array(
     'slow' => 'slow',
     'middle' => 'middle',

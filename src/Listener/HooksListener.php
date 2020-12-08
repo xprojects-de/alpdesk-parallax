@@ -10,7 +10,6 @@ use Contao\PageModel;
 use Contao\PageRegular;
 use Contao\FrontendTemplate;
 use Contao\FilesModel;
-use Contao\Controller;
 use Contao\Template;
 use Contao\Environment;
 use Contao\File;
@@ -69,7 +68,9 @@ class HooksListener {
     $templateAnimation = new FrontendTemplate('animation_container');
     $templateAnimation->src = Environment::get('base') . $imageSrc;
     $templateAnimation->viewport = $dataItem['animation_viewport'];
+    $templateAnimation->startposition = $dataItem['animation_startposition'];
     $templateAnimation->effect = $dataItem['animation_effect'];
+    $templateAnimation->fade = $dataItem['animation_fade'];
     $templateAnimation->speed = $dataItem['animation_speed'];
 
     return $templateAnimation;

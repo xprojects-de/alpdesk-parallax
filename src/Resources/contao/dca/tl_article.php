@@ -147,11 +147,25 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['animationeffects'] = array(
                 'inputType' => 'select',
                 'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'],
             ],
+            'animation_startposition' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_startposition'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_startposition_options'],
+            ],
             'animation_effect' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_effect'],
                 'exclude' => true,
                 'inputType' => 'select',
                 'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_effect_options'],
+                'eval' => ['includeBlankOption' => true],
+            ],
+            'animation_fade' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_fade'],
+                'exclude' => true,
+                'inputType' => 'select',
+                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_fade_options'],
+                'eval' => ['includeBlankOption' => true],
             ],
             'animation_speed' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_speed'],
