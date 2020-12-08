@@ -14,7 +14,9 @@ use Contao\Controller;
 use Contao\Template;
 use Contao\Environment;
 use Contao\File;
-use Contao\Image;
+use Contao\StringUtil;
+use Contao\Validator;
+use Contao\System;
 
 class HooksListener {
 
@@ -30,26 +32,21 @@ class HooksListener {
     }
   }
 
-  private function getImage($uuid, $size = array()) {
-    $value = null;
-    $objFile = FilesModel::findByUUID($uuid);
-    if (is_file(TL_ROOT . '/' . $objFile->path)) {
-      $imgSrc = new File($objFile->path, true);
-      if ($imgSrc->exists()) {
-        if (count($size)) {
-          $value = Image::get($objFile->path, $size[0], $size[1], $size[2]);
-        } else {
-          $value = Image::get($objFile->path, $file1->width, $file1->height);
-        }
-      }
+  private function getImage($path, $size) {
+    try {
+      $objImageModel = (Validator::isUuid($path)) ? FilesModel::findByUuid($path) : FilesModel::findByPath($path);
+      $rootDir = System::getContainer()->getParameter('kernel.project_dir');
+      $imageFactory = System::getContainer()->get('contao.image.image_factory');
+      return $imageFactory->create($rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size))->getUrl($rootDir);
+    } catch (\Exception $ex) {
+      return null;
     }
-    return $value;
   }
 
   public function onCompileArticle(FrontendTemplate &$objTemplate, array $arrData): void {
     if (TL_MODE == 'FE' && $arrData['hasParallaxBackgroundImage'] == 1) {
-      $tmp = $this->getImage($arrData['singleSRC'], deserialize($arrData['size']));
-      if ($tmp !== null) {
+      $tmp = $this->getImage($arrData['singleSRC'], $arrData['size']);
+      if ($tmp !== null && $tmp !== '') {
         $templateBackgroundImage = new FrontendTemplate('parallax_container');
         Controller::addImageToTemplate($templateBackgroundImage, $arrData);
         $srcImage = new File($tmp);
