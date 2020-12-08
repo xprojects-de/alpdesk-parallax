@@ -1,0 +1,17 @@
+
+.has-animationeffects {
+  position: relative;
+}
+
+.has-animationeffects .animation-effect {
+  position: absolute;
+  z-index: -199;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: auto;
+  background-position-x: left;
+  background-position-y: top;
+  background-repeat: no-repeat;
+}
