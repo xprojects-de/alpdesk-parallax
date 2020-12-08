@@ -1,0 +1,6 @@
+<div class="animation-effect" 
+     data-src="<?= $this->src ?>"
+     data-effect="<?= $this->effect ?>"
+     data-speed="<?= $this->speed ?>"
+     data-viewport="<?= $this->viewport ?>">
+</div>

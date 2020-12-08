@@ -1,0 +1,11 @@
+
+.has-animationeffects {
+  position: relative;
+}
+
+.has-animationeffects .animation-effect {
+  position: absolute;
+  z-index: -199;
+  top:0;
+  left:0;
+}
