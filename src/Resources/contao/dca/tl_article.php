@@ -9,7 +9,7 @@ PaletteManipulator::create()
         ->applyToPalette('default', 'tl_article');
 
 $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasParallaxBackgroundImage';
-$GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasParallaxBackgroundImage'] = 'singleSRC,size,sizemodus,hAlign,vAlign,isParallax';
+$GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasParallaxBackgroundImage'] = 'singleSRC,size,sizemodus,hAlign,vAlign,vParallax,isParallax';
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['hasParallaxBackgroundImage'] = array
     (
@@ -84,6 +84,17 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['vAlign'] = array
     'options' => array('top', 'center', 'bottom'),
     'reference' => &$GLOBALS['TL_LANG']['tl_article']['vAlign_options'],
     'eval' => array('tl_class' => 'w50'),
+    'sql' => "varchar(64) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_article']['fields']['vParallax'] = array
+    (
+    'label' => &$GLOBALS['TL_LANG']['tl_article']['vParallax'],
+    'exclude' => true,
+    'inputType' => 'select',
+    'options' => array('left', 'right'),
+    'reference' => &$GLOBALS['TL_LANG']['tl_article']['vParallax_options'],
+    'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true),
     'sql' => "varchar(64) NOT NULL default ''"
 );
 

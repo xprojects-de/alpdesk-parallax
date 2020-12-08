@@ -55,20 +55,32 @@ $(document).ready(function () {
     }
 
     function setPosition(element) {
+
       var vAlign = parseInt($(element.node).attr('data-parallax-valign'));
       var hAlign = $(element.node).attr('data-parallax-halign');
+      var vParallax = $(element.node).attr('data-vparallax');
       var factor = 0.15;
+
       if (element.vAlign === 'bottom') {
         factor = factor * -1;
       }
-      var yPos = (vAlign + (factor * ($(window).scrollTop() - element.node.getBoundingClientRect().top)));
-      if (yPos > 0) {
+
+      var motion = (vAlign + (factor * ($(window).scrollTop() - element.node.getBoundingClientRect().top)));
+      if (motion > 0) {
         $(element.node).css({
-          backgroundPositionY: yPos + 'px'
+          backgroundPositionY: motion + 'px'
         });
       }
+
+      var motion_h = '';
+      if (vParallax === 'left' && element.hAlign !== 'center') {
+        motion_h = ' ' + (-motion) + 'px';
+      } else if (vParallax === 'right' && element.hAlign !== 'center') {
+        motion_h = ' ' + (motion) + 'px';
+      }
+
       $(element.node).css({
-        backgroundPositionX: hAlign
+        backgroundPositionX: hAlign + motion_h
       });
 
     }
