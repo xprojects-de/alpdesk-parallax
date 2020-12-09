@@ -28,7 +28,7 @@ $(document).ready(function () {
       return yPos;
     }
 
-    function scroll() {
+    function scrollParallax() {
       for (var i = 0; i < parallaxElements.length; i++) {
         var parent = parallaxElements[i].node.parentNode;
         if ($(parent).hasClass('parallax')) {
@@ -38,7 +38,8 @@ $(document).ready(function () {
               vAlign: parallaxElements[i].vAlign,
               hAlign: parallaxElements[i].hAlign,
               sizeModus: parallaxElements[i].sizeModus,
-              coverH: parallaxElements[i].coverH
+              coverH: parallaxElements[i].coverH,
+              elementH: parallaxElements[i].elementH
             });
           }
         }
@@ -81,8 +82,8 @@ $(document).ready(function () {
       var trigger = false;
       if (motion > 0) {
         trigger = true;
-        if (element.sizeModus === 'cover' && ((motion * 2) > element.coverH)) {
-          trigger = false;
+        if (element.sizeModus === 'cover' && (motion > (element.coverH - element.elementH))) {
+          motion = (element.coverH - element.elementH);
         }
       }
 
@@ -105,7 +106,10 @@ $(document).ready(function () {
 
     }
 
-    function init() {
+    function initParallax() {
+
+      parallaxElements = [];
+      visibleElements = [];
 
       $('.has-responsive-background-image').each(function (index) {
 
@@ -119,7 +123,6 @@ $(document).ready(function () {
           var vAlign = node.data('valign');
           var src = node.data('src');
           var srcHeight = node.data('srcheight');
-          var srcWidth = node.data('srcwidth');
 
           node.css({
             backgroundImage: 'url(' + src + ')',
@@ -128,9 +131,12 @@ $(document).ready(function () {
 
           if (parallaxActive === 1) {
 
+            var coverH = 0;
+            var elementH = $(this).height();
+
             if (sizeModus === 'cover') {
-              var coverH = $(this).height() * 3;
-              var coverTop = -(coverH - $(this).height());
+              coverH = elementH + ($(window).height() / 3);
+              var coverTop = -(coverH - elementH);
               node.height(coverH);
               node.css({
                 top: coverTop
@@ -145,10 +151,11 @@ $(document).ready(function () {
               vAlign: vAlign,
               hAlign: hAlign,
               sizeModus: sizeModus,
-              coverH: coverH
+              coverH: coverH,
+              elementH: elementH
             });
 
-            scroll();
+            scrollParallax();
 
           } else {
 
@@ -164,13 +171,13 @@ $(document).ready(function () {
       });
     }
 
-    init();
+    initParallax();
 
     if (!parallaxElements.length)
       return;
 
-    $(window).on('scroll', scroll);
-    $(window).on('resize', init);
+    $(window).on('scroll', scrollParallax);
+    $(window).on('resize', initParallax);
 
   })();
 });
