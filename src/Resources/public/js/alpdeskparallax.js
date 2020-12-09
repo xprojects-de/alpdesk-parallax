@@ -2,6 +2,10 @@ $(document).ready(function () {
 
   (function () {
 
+    if (!('requestAnimationFrame' in window)) {
+      return;
+    }
+
     $.fn.isInParallaxViewport = function () {
       var elementTop = $(this).offset().top;
       var elementBottom = elementTop + $(this).outerHeight();
@@ -12,6 +16,7 @@ $(document).ready(function () {
 
     var parallaxElements = [];
     var visibleElements = [];
+    var processParallaxScheduled;
 
     function prepareBackgroundvAlign(nodeHeight, srcHeight, vAlign) {
       var yPos = 0; // top
@@ -38,7 +43,12 @@ $(document).ready(function () {
           }
         }
       }
-      updateVisibleElements();
+
+      cancelAnimationFrame(processParallaxScheduled);
+      if (visibleElements.length) {
+        processParallaxScheduled = requestAnimationFrame(updateVisibleElements);
+      }
+
     }
 
     function checkVisibleExists(element) {

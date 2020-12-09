@@ -55,7 +55,9 @@ $GLOBALS['TL_LANG']['tl_article']['animation_startposition_options'] = array(
     's4' => 'bottom/left',
     's5' => 'bottom/middle',
     's6' => 'bottom/right',
-    's7' => 'middle/middle',
+    's7' => 'middle/left',
+    's8' => 'middle/middle',
+    's9' => 'middle/right',
 );
 $GLOBALS['TL_LANG']['tl_article']['animation_effect'] = array('Motion-Effect', 'Please select an effect');
 $GLOBALS['TL_LANG']['tl_article']['animation_effect_options'] = array(
@@ -65,7 +67,9 @@ $GLOBALS['TL_LANG']['tl_article']['animation_effect_options'] = array(
     'e4' => 'bottom/left',
     'e5' => 'bottom/middle',
     'e6' => 'bottom/right',
-    'e7' => 'middle/middle',
+    'e7' => 'middle/left',
+    'e8' => 'middle/middle',
+    'e9' => 'middle/right',
 );
 $GLOBALS['TL_LANG']['tl_article']['animation_fade'] = array('Fade-Effect', 'Please select an effect');
 $GLOBALS['TL_LANG']['tl_article']['animation_fade_options'] = array(
