@@ -2,6 +2,10 @@ $(document).ready(function () {
 
   (function () {
 
+    if (!('requestAnimationFrame' in window)) {
+      return;
+    }
+
     $.fn.isInAnimationViewport = function (offsetPercent = 0) {
       var elementTop = $(this).offset().top;
       if (offsetPercent !== 0 && elementTop !== 0) {
@@ -16,6 +20,7 @@ $(document).ready(function () {
 
     var animationElements = [];
     var visibleAnimationElements = [];
+    var processAnimationsScheduled;
 
     var POSITION_S1 = 's1';
     var POSITION_S2 = 's2';
@@ -67,7 +72,7 @@ $(document).ready(function () {
       return s;
     }
 
-    function scroll() {
+    function processAnimation() {
       for (var i = 0; i < animationElements.length; i++) {
         var parent = animationElements[i].node.parentNode;
         if ($(parent).isInAnimationViewport(animationElements[i].viewport) && !checkVisibleExists(animationElements[i].node)) {
@@ -82,7 +87,11 @@ $(document).ready(function () {
           });
         }
       }
-      updateVisibleElements();
+
+      cancelAnimationFrame(processAnimationsScheduled);
+      if (animationElements.length) {
+        processAnimationsScheduled = requestAnimationFrame(updateVisibleElements);
+      }
     }
 
     function checkVisibleExists(element) {
@@ -299,7 +308,7 @@ $(document).ready(function () {
               viewport: viewport
             });
 
-            scroll();
+            processAnimation();
 
           }
 
@@ -313,7 +322,7 @@ $(document).ready(function () {
     if (!animationElements.length)
       return;
 
-    $(window).on('scroll', scroll);
+    $(window).on('scroll', processAnimation);
     $(window).on('resize', init);
 
   })();
