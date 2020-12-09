@@ -2,6 +2,10 @@ $(document).ready(function () {
 
   (function () {
 
+    if (!('requestAnimationFrame' in window)) {
+      return;
+    }
+
     $.fn.isInAnimationViewport = function (offsetPercent = 0) {
       var elementTop = $(this).offset().top;
       if (offsetPercent !== 0 && elementTop !== 0) {
@@ -16,6 +20,7 @@ $(document).ready(function () {
 
     var animationElements = [];
     var visibleAnimationElements = [];
+    var processAnimationsScheduled;
 
     var POSITION_S1 = 's1';
     var POSITION_S2 = 's2';
@@ -24,6 +29,8 @@ $(document).ready(function () {
     var POSITION_S5 = 's5';
     var POSITION_S6 = 's6';
     var POSITION_S7 = 's7';
+    var POSITION_S8 = 's8';
+    var POSITION_S9 = 's9';
 
     var EFFECT_E1 = 'e1';
     var EFFECT_E2 = 'e2';
@@ -32,6 +39,8 @@ $(document).ready(function () {
     var EFFECT_E5 = 'e5';
     var EFFECT_E6 = 'e6';
     var EFFECT_E7 = 'e7';
+    var EFFECT_E8 = 'e8';
+    var EFFECT_E9 = 'e9';
 
     var FADE_F1 = 'f1';
     var FADE_F2 = 'f2';
@@ -67,7 +76,7 @@ $(document).ready(function () {
       return s;
     }
 
-    function scroll() {
+    function processAnimation() {
       for (var i = 0; i < animationElements.length; i++) {
         var parent = animationElements[i].node.parentNode;
         if ($(parent).isInAnimationViewport(animationElements[i].viewport) && !checkVisibleExists(animationElements[i].node)) {
@@ -82,7 +91,11 @@ $(document).ready(function () {
           });
         }
       }
-      updateVisibleElements();
+
+      cancelAnimationFrame(processAnimationsScheduled);
+      if (animationElements.length) {
+        processAnimationsScheduled = requestAnimationFrame(updateVisibleElements);
+      }
     }
 
     function checkVisibleExists(element) {
@@ -168,7 +181,25 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               backgroundPositionY: '50%',
+              backgroundPositionX: '0%',
+              opacity: opacity
+            }, speed);
+            break;
+          }
+          case EFFECT_E8:
+          {
+            $(element.node).stop().animate({
+              backgroundPositionY: '50%',
               backgroundPositionX: '50%',
+              opacity: opacity
+            }, speed);
+            break;
+          }
+          case EFFECT_E9:
+          {
+            $(element.node).stop().animate({
+              backgroundPositionY: '50%',
+              backgroundPositionX: '100%',
               opacity: opacity
             }, speed);
             break;
@@ -238,7 +269,23 @@ $(document).ready(function () {
         {
           node.css({
             backgroundPositionY: '50%',
+            backgroundPositionX: '0%'
+          });
+          break;
+        }
+        case POSITION_S8:
+        {
+          node.css({
+            backgroundPositionY: '50%',
             backgroundPositionX: '50%'
+          });
+          break;
+        }
+        case POSITION_S9:
+        {
+          node.css({
+            backgroundPositionY: '50%',
+            backgroundPositionX: '100%'
           });
           break;
         }
@@ -299,7 +346,7 @@ $(document).ready(function () {
               viewport: viewport
             });
 
-            scroll();
+            processAnimation();
 
           }
 
@@ -313,7 +360,7 @@ $(document).ready(function () {
     if (!animationElements.length)
       return;
 
-    $(window).on('scroll', scroll);
+    $(window).on('scroll', processAnimation);
     $(window).on('resize', init);
 
   })();
