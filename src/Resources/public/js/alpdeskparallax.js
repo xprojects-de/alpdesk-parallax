@@ -14,9 +14,18 @@ $(document).ready(function () {
       return elementBottom > viewportTop && elementTop < viewportBottom;
     };
 
+    $.fn.getParallaxScrollOffset = function () {
+      var diff = ($(this).offset().top - $(window).height());
+      if (diff < 0) {
+        diff = 0;
+      }
+      return diff;
+    };
+
     var parallaxElements = [];
     var visibleElements = [];
     var processParallaxScheduled;
+    var factor = 0.2;
 
     function prepareBackgroundvAlign(nodeHeight, srcHeight, vAlign) {
       var yPos = 0; // top
@@ -35,6 +44,7 @@ $(document).ready(function () {
           if ($(parent).isInParallaxViewport() && !checkVisibleExists(parallaxElements[i].node)) {
             visibleElements.push({
               node: parallaxElements[i].node,
+              parent: parent,
               vAlign: parallaxElements[i].vAlign,
               hAlign: parallaxElements[i].hAlign,
               sizeModus: parallaxElements[i].sizeModus,
@@ -69,29 +79,24 @@ $(document).ready(function () {
 
     function setPosition(element) {
 
+      if (element.parent.getBoundingClientRect().top > $(window).height()) {
+        return;
+      }
+
       var vAlign = parseInt($(element.node).attr('data-parallax-valign'));
       var hAlign = $(element.node).attr('data-parallax-halign');
       var vParallax = $(element.node).attr('data-vparallax');
-      var factor = 0.15;
+
+      var scrollOffset = $(window).scrollTop() - $(element.parent).getParallaxScrollOffset();
+      var motion = (vAlign + (factor * scrollOffset));
 
       if (element.vAlign === 'bottom') {
-        factor = factor * -1;
+        motion = (vAlign + (-factor * scrollOffset));
       }
 
-      var motion = (vAlign + (factor * ($(window).scrollTop() - element.node.getBoundingClientRect().top)));
-      var trigger = false;
-      if (motion > 0) {
-        trigger = true;
-        if (element.sizeModus === 'cover' && (motion > (element.coverH - element.elementH))) {
-          motion = (element.coverH - element.elementH);
-        }
-      }
-
-      if (trigger === true) {
-        $(element.node).css({
-          backgroundPositionY: motion + 'px'
-        });
-      }
+      $(element.node).css({
+        backgroundPositionY: motion + 'px'
+      });
 
       var motion_h = '';
       if (vParallax === 'left' && element.hAlign !== 'center') {
@@ -132,14 +137,16 @@ $(document).ready(function () {
           if (parallaxActive === 1) {
 
             var coverH = 0;
-            var elementH = $(this).height();
+            var elementH = $(this).outerHeight();
 
             if (sizeModus === 'cover') {
-              coverH = elementH + ($(window).height() / 3);
+
+              var coverH = elementH + ((factor * $(window).height()) * 2);
               var coverTop = -(coverH - elementH);
               node.height(coverH);
               node.css({
-                top: coverTop
+                top: coverTop,
+                backgroundPositionY: '0%'
               });
             }
 
