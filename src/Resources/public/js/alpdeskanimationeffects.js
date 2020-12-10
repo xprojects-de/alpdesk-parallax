@@ -18,6 +18,26 @@ $(document).ready(function () {
       return elementBottom > viewportTop && elementTop < viewportBottom;
     };
 
+    $.fn.getAnimationXOffset = function (position = 'left') {
+      var o = 0;
+      if (position === 'right') {
+        o = ($(this).parent().width() - $(this).outerWidth());
+      } else if (position === 'center') {
+        o = (($(this).parent().width() / 2) - ($(this).outerWidth() / 2));
+      }
+      return o;
+    };
+
+    $.fn.getAnimationYOffset = function (position = 'top') {
+      var o = 0;
+      if (position === 'bottom') {
+        o = ($(this).parent().height() - $(this).outerHeight()());
+      } else if (position === 'center') {
+        o = (($(this).parent().height() / 2) - ($(this).outerHeight() / 2));
+      }
+      return o;
+    };
+
     var animationElements = [];
     var visibleAnimationElements = [];
     var processAnimationsScheduled;
@@ -126,8 +146,8 @@ $(document).ready(function () {
           case EFFECT_E1:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '0%',
-              backgroundPositionX: '0%',
+              top: $(element.node).getAnimationYOffset('top') + 'px',
+              left: $(element.node).getAnimationXOffset('left') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -135,8 +155,8 @@ $(document).ready(function () {
           case EFFECT_E2:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '0%',
-              backgroundPositionX: '50%',
+              top: $(element.node).getAnimationYOffset('top') + 'px',
+              left: $(element.node).getAnimationXOffset('center') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -144,8 +164,8 @@ $(document).ready(function () {
           case EFFECT_E3:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '0%',
-              backgroundPositionX: '100%',
+              top: $(element.node).getAnimationYOffset('top') + 'px',
+              left: $(element.node).getAnimationXOffset('right') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -153,8 +173,8 @@ $(document).ready(function () {
           case EFFECT_E4:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '100%',
-              backgroundPositionX: '0%',
+              top: $(element.node).getAnimationYOffset('bottom') + 'px',
+              left: $(element.node).getAnimationXOffset('left') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -162,8 +182,8 @@ $(document).ready(function () {
           case EFFECT_E5:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '100%',
-              backgroundPositionX: '50%',
+              top: $(element.node).getAnimationYOffset('bottom') + 'px',
+              left: $(element.node).getAnimationXOffset('center') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -171,8 +191,8 @@ $(document).ready(function () {
           case EFFECT_E6:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '100%',
-              backgroundPositionX: '100%',
+              top: $(element.node).getAnimationYOffset('bottom') + 'px',
+              left: $(element.node).getAnimationXOffset('right') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -180,8 +200,8 @@ $(document).ready(function () {
           case EFFECT_E7:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '50%',
-              backgroundPositionX: '0%',
+              top: $(element.node).getAnimationYOffset('center') + 'px',
+              left: $(element.node).getAnimationXOffset('left') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -189,8 +209,8 @@ $(document).ready(function () {
           case EFFECT_E8:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '50%',
-              backgroundPositionX: '50%',
+              top: $(element.node).getAnimationYOffset('center') + 'px',
+              left: $(element.node).getAnimationXOffset('center') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -198,8 +218,8 @@ $(document).ready(function () {
           case EFFECT_E9:
           {
             $(element.node).stop().animate({
-              backgroundPositionY: '50%',
-              backgroundPositionX: '100%',
+              top: $(element.node).getAnimationYOffset('center') + 'px',
+              left: $(element.node).getAnimationXOffset('right') + 'px',
               opacity: opacity
             }, speed);
             break;
@@ -220,72 +240,72 @@ $(document).ready(function () {
         case POSITION_S1:
         {
           node.css({
-            backgroundPositionY: '0%',
-            backgroundPositionX: '0%'
+            top: $(node).getAnimationYOffset('top') + 'px',
+            left: $(node).getAnimationXOffset('left') + 'px'
           });
           break;
         }
         case POSITION_S2:
         {
           node.css({
-            backgroundPositionY: '0%',
-            backgroundPositionX: '50%'
+            top: $(node).getAnimationYOffset('top') + 'px',
+            left: $(node).getAnimationXOffset('center') + 'px'
           });
           break;
         }
         case POSITION_S3:
         {
           node.css({
-            backgroundPositionY: '0%',
-            backgroundPositionX: '100%'
+            top: $(node).getAnimationYOffset('top') + 'px',
+            left: $(node).getAnimationXOffset('right') + 'px'
           });
           break;
         }
         case POSITION_S4:
         {
           node.css({
-            backgroundPositionY: '100%',
-            backgroundPositionX: '0%'
+            top: $(node).getAnimationYOffset('bottom') + 'px',
+            left: $(node).getAnimationXOffset('left') + 'px'
           });
           break;
         }
         case POSITION_S5:
         {
           node.css({
-            backgroundPositionY: '100%',
-            backgroundPositionX: '50%'
+            top: $(node).getAnimationYOffset('bottom') + 'px',
+            left: $(node).getAnimationXOffset('center') + 'px'
           });
           break;
         }
         case POSITION_S6:
         {
           node.css({
-            backgroundPositionY: '100%',
-            backgroundPositionX: '100%'
+            top: $(node).getAnimationYOffset('bottom') + 'px',
+            left: $(node).getAnimationXOffset('right') + 'px'
           });
           break;
         }
         case POSITION_S7:
         {
           node.css({
-            backgroundPositionY: '50%',
-            backgroundPositionX: '0%'
+            top: $(node).getAnimationYOffset('center') + 'px',
+            left: $(node).getAnimationXOffset('left') + 'px'
           });
           break;
         }
         case POSITION_S8:
         {
           node.css({
-            backgroundPositionY: '50%',
-            backgroundPositionX: '50%'
+            top: $(node).getAnimationYOffset('center') + 'px',
+            left: $(node).getAnimationXOffset('center') + 'px'
           });
           break;
         }
         case POSITION_S9:
         {
           node.css({
-            backgroundPositionY: '50%',
-            backgroundPositionX: '100%'
+            top: $(node).getAnimationYOffset('center') + 'px',
+            left: $(node).getAnimationXOffset('right') + 'px'
           });
           break;
         }
@@ -331,7 +351,7 @@ $(document).ready(function () {
             var viewport = node.data('viewport');
 
             node.css({
-              backgroundImage: 'url(' + src + ')'
+              //backgroundImage: 'url(' + src + ')'
             });
 
             prepareEffect(node, startposition);

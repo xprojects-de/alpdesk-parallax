@@ -1,4 +1,4 @@
-<div class="animation-effect animate__animated animate__bounce" 
+<div class="animation-effect animate__animated animate__flash" 
      data-src="<?= $this->src ?>"
      data-startposition="<?= $this->startposition ?>"
      data-effect="<?= $this->effect ?>"
