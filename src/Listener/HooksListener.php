@@ -85,6 +85,7 @@ class HooksListener {
     $templateAnimation->effect = $dataItem['animation_effect'];
     $templateAnimation->speed = $dataItem['animation_speed'];
     $templateAnimation->hide = ($dataItem['animation_hide_before_viewport'] == 1 ? true : false);
+    $templateAnimation->foreground = ($dataItem['animation_zindex'] == 1 ? true : false);
     $templateAnimation->animationCss = '';
     if (\array_key_exists('animation_animatecss', $dataItem) && \is_array($dataItem['animation_animatecss']) && \count($dataItem['animation_animatecss'] > 0)) {
       $templateAnimation->animationCss = implode(';', $dataItem['animation_animatecss']);

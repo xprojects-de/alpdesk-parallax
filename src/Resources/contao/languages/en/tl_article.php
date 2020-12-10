@@ -34,6 +34,7 @@ $GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'] = array('activate Anima
 $GLOBALS['TL_LANG']['tl_article']['animationeffects'] = array('Animations-Effects', '');
 $GLOBALS['TL_LANG']['tl_article']['animation_image'] = array('Image', 'Please select an image');
 $GLOBALS['TL_LANG']['tl_article']['animation_hide_before_viewport'] = array('Hide before viewport', 'Hide Element before come to viewport');
+$GLOBALS['TL_LANG']['tl_article']['animation_zindex'] = array('To Foreground', 'Place Element to foreground');
 $GLOBALS['TL_LANG']['tl_article']['animation_viewport'] = array('Viewport-Offset', 'Please select an offset');
 $GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'] = array(
     '0' => 'Viewport + 0 percent',

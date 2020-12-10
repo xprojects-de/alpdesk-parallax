@@ -34,6 +34,7 @@ $GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'] = array('Animations-Eff
 $GLOBALS['TL_LANG']['tl_article']['animationeffects'] = array('Animations-Effekte', '');
 $GLOBALS['TL_LANG']['tl_article']['animation_image'] = array('Bild', 'Bitte wählen sie ein Bild aus');
 $GLOBALS['TL_LANG']['tl_article']['animation_hide_before_viewport'] = array('Unsichtbar vor Viewport', 'Element unsichtbar bevor es den Viewport erreicht');
+$GLOBALS['TL_LANG']['tl_article']['animation_zindex'] = array('Im Vordergrund', 'Element in den Vordergrund setzen');
 $GLOBALS['TL_LANG']['tl_article']['animation_viewport'] = array('Viewport-Offset', 'Bitte wählen sie aus ab welchem Offset der Effekt starten soll');
 $GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'] = array(
     '0' => 'Viewport + 0 Prozent',

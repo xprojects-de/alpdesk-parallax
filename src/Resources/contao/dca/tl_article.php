@@ -153,6 +153,11 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['animationeffects'] = array(
                 'exclude' => true,
                 'inputType' => 'checkbox',
             ],
+            'animation_zindex' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_zindex'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+            ],
             'animation_startposition' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_startposition'],
                 'exclude' => true,

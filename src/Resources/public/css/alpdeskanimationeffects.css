@@ -11,6 +11,10 @@
   animation-duration: 5s;
 }
 
+.has-animationeffects .animation-effect-foreground {
+  z-index: 1;
+}
+
 .has-animationeffects .animation-effect-hide {
   display: none;
 }

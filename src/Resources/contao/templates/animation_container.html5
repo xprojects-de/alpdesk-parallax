@@ -1,4 +1,4 @@
-<div class="animation-effect<?= ($this->hide == true ? ' animation-effect-hide' : '') ?>" 
+<div class="animation-effect<?= ($this->hide == true ? ' animation-effect-hide' : '') ?><?= ($this->foreground == true ? ' animation-effect-foreground': '')?>" 
      data-startposition="<?= $this->startposition ?>"
      data-effect="<?= $this->effect ?>"
      data-speed="<?= $this->speed ?>"
