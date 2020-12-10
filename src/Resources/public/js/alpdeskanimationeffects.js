@@ -31,7 +31,7 @@ $(document).ready(function () {
     $.fn.getAnimationYOffset = function (position = 'top') {
       var o = 0;
       if (position === 'bottom') {
-        o = ($(this).parent().height() - $(this).outerHeight()());
+        o = ($(this).parent().height() - $(this).outerHeight());
       } else if (position === 'center') {
         o = (($(this).parent().height() / 2) - ($(this).outerHeight() / 2));
       }
