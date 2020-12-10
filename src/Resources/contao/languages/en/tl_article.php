@@ -31,6 +31,7 @@ $GLOBALS['TL_LANG']['tl_article']['vParallax_options'] = array(
 );
 
 $GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'] = array('activate Animations-Effekte', '');
+$GLOBALS['TL_LANG']['tl_article']['ignoreReducedAnimationMotion'] = array('Show elements in spite of OS reduced movements', 'The animation will still not procceded. the element is just placed.');
 $GLOBALS['TL_LANG']['tl_article']['animationeffects'] = array('Animations-Effects', '');
 $GLOBALS['TL_LANG']['tl_article']['animation_image'] = array('Image', 'Please select an image');
 $GLOBALS['TL_LANG']['tl_article']['animation_hide_before_viewport'] = array('Hide before viewport', 'Hide Element before come to viewport');

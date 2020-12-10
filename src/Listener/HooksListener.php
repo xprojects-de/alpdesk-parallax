@@ -67,7 +67,7 @@ class HooksListener {
     }
   }
 
-  private function appendAnimationEffect(array $dataItem) {
+  private function appendAnimationEffect(array $dataItem, $ignoreReducedAnimationMotion) {
 
     if ($dataItem['animation_image'] === '') {
       return null;
@@ -86,6 +86,7 @@ class HooksListener {
     $templateAnimation->speed = $dataItem['animation_speed'];
     $templateAnimation->hide = ($dataItem['animation_hide_before_viewport'] == 1 ? true : false);
     $templateAnimation->foreground = ($dataItem['animation_zindex'] == 1 ? true : false);
+    $templateAnimation->ignoreReducedAnimationMotion = ($ignoreReducedAnimationMotion == 1 ? true : false);
     $templateAnimation->animationCss = '';
     if (\array_key_exists('animation_animatecss', $dataItem) && \is_array($dataItem['animation_animatecss']) && \count($dataItem['animation_animatecss'] > 0)) {
       $templateAnimation->animationCss = implode(';', $dataItem['animation_animatecss']);
@@ -138,7 +139,7 @@ class HooksListener {
       $animationItems = StringUtil::deserialize($arrData['animationeffects']);
       if (\is_array($animationItems) && \count($animationItems) > 0) {
         foreach ($animationItems as $animationItem) {
-          $effect = $this->appendAnimationEffect($animationItem);
+          $effect = $this->appendAnimationEffect($animationItem, $arrData['ignoreReducedAnimationMotion']);
           if ($effect !== null) {
             array_unshift($elements, $effect->parse());
           }
