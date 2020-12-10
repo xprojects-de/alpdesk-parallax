@@ -1,8 +1,15 @@
-<div class="animation-effect" 
+<div class="animation-effect animate__animated animate__bounce" 
      data-src="<?= $this->src ?>"
      data-startposition="<?= $this->startposition ?>"
      data-effect="<?= $this->effect ?>"
      data-fade="<?= $this->fade ?>"
      data-speed="<?= $this->speed ?>"
      data-viewport="<?= $this->viewport ?>">
+       <?php if ($this->metaLink !== ''): ?>
+    <a href="<?= $this->metaLink ?>" title="<?= $this->metaTitle ?>">
+      <img src="<?= $this->src ?>" alt="<?= $this->metaAlt ?>">
+    </a>
+  <?php else: ?>
+    <img src="<?= $this->src ?>" alt="<?= $this->metaAlt ?>">
+  <?php endif; ?>
 </div>
