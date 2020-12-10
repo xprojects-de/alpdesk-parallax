@@ -2,6 +2,7 @@
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
+use Alpdesk\AlpdeskParallax\AlpdeskParallaxBundle;
 
 PaletteManipulator::create()
         ->addLegend('backgroundparallaximage_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
@@ -147,6 +148,11 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['animationeffects'] = array(
                 'inputType' => 'select',
                 'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'],
             ],
+            'animation_hide_before_viewport' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_hide_before_viewport'],
+                'exclude' => true,
+                'inputType' => 'checkbox',
+            ],
             'animation_startposition' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_startposition'],
                 'exclude' => true,
@@ -160,12 +166,12 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['animationeffects'] = array(
                 'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_effect_options'],
                 'eval' => ['includeBlankOption' => true],
             ],
-            'animation_fade' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_fade'],
+            'animation_animatecss' => [
+                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_animatecss'],
                 'exclude' => true,
                 'inputType' => 'select',
-                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_fade_options'],
-                'eval' => ['includeBlankOption' => true],
+                'options' => AlpdeskParallaxBundle::$animationOptions,
+                'eval' => ['includeBlankOption' => true, 'multiple' => true],
             ],
             'animation_speed' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_speed'],

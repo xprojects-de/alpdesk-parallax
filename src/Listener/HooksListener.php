@@ -83,8 +83,12 @@ class HooksListener {
     $templateAnimation->viewport = $dataItem['animation_viewport'];
     $templateAnimation->startposition = $dataItem['animation_startposition'];
     $templateAnimation->effect = $dataItem['animation_effect'];
-    $templateAnimation->fade = $dataItem['animation_fade'];
     $templateAnimation->speed = $dataItem['animation_speed'];
+    $templateAnimation->hide = ($dataItem['animation_hide_before_viewport'] == 1 ? true : false);
+    $templateAnimation->animationCss = '';
+    if (\array_key_exists('animation_animatecss', $dataItem) && \is_array($dataItem['animation_animatecss']) && \count($dataItem['animation_animatecss'] > 0)) {
+      $templateAnimation->animationCss = implode(';', $dataItem['animation_animatecss']);
+    }
 
     $templateAnimation->metaTitle = '';
     $templateAnimation->metaAlt = '';

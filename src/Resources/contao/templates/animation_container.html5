@@ -1,9 +1,9 @@
-<div class="animation-effect animate__animated animate__flash" 
-     data-src="<?= $this->src ?>"
+<div class="animation-effect<?= ($this->hide == true ? ' animation-effect-hide' : '') ?>" 
      data-startposition="<?= $this->startposition ?>"
      data-effect="<?= $this->effect ?>"
-     data-fade="<?= $this->fade ?>"
      data-speed="<?= $this->speed ?>"
+     data-animationcss="<?= $this->animationCss ?>"
+     data-hide="<?= ($this->hide == true ? 1 : 0) ?>"
      data-viewport="<?= $this->viewport ?>">
        <?php if ($this->metaLink !== ''): ?>
     <a href="<?= $this->metaLink ?>" title="<?= $this->metaTitle ?>">

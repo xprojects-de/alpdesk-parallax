@@ -62,9 +62,6 @@ $(document).ready(function () {
     var EFFECT_E8 = 'e8';
     var EFFECT_E9 = 'e9';
 
-    var FADE_F1 = 'f1';
-    var FADE_F2 = 'f2';
-
     var EFFECT_SPEED_SLOW = 'slow';
     var EFFECT_SPEED_SLOW_VALUE = 4000;
     var EFFECT_SPEED_MIDDLE = 'middle';
@@ -107,6 +104,7 @@ $(document).ready(function () {
             startposition: animationElements[i].startposition,
             speed: animationElements[i].speed,
             viewport: animationElements[i].viewport,
+            animateCssOptions: animationElements[i].animateCssOptions,
             triggered: false
           });
         }
@@ -137,9 +135,17 @@ $(document).ready(function () {
       if (element.triggered === false) {
 
         var speed = getSpeed(element.speed);
-        var opacity = 1;
-        if (element.fade === FADE_F2) {
-          opacity = 0;
+
+        $(element.node).show();
+
+        if (element.animateCssOptions.length > 0) {
+          $(element.node).css({
+            animationDuration: speed + 'ms'
+          });
+          $(element.node).addClass('animate__animated');
+          for (var i = 0; i < element.animateCssOptions.length; i++) {
+            $(element.node).addClass('animate__' + element.animateCssOptions[i]);
+          }
         }
 
         switch (element.effect) {
@@ -147,8 +153,7 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('top') + 'px',
-              left: $(element.node).getAnimationXOffset('left') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('left') + 'px'
             }, speed);
             break;
           }
@@ -156,8 +161,7 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('top') + 'px',
-              left: $(element.node).getAnimationXOffset('center') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('center') + 'px'
             }, speed);
             break;
           }
@@ -165,8 +169,7 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('top') + 'px',
-              left: $(element.node).getAnimationXOffset('right') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('right') + 'px'
             }, speed);
             break;
           }
@@ -174,8 +177,7 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('bottom') + 'px',
-              left: $(element.node).getAnimationXOffset('left') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('left') + 'px'
             }, speed);
             break;
           }
@@ -183,8 +185,7 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('bottom') + 'px',
-              left: $(element.node).getAnimationXOffset('center') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('center') + 'px'
             }, speed);
             break;
           }
@@ -192,8 +193,7 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('bottom') + 'px',
-              left: $(element.node).getAnimationXOffset('right') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('right') + 'px'
             }, speed);
             break;
           }
@@ -201,8 +201,7 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('center') + 'px',
-              left: $(element.node).getAnimationXOffset('left') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('left') + 'px'
             }, speed);
             break;
           }
@@ -210,8 +209,7 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('center') + 'px',
-              left: $(element.node).getAnimationXOffset('center') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('center') + 'px'
             }, speed);
             break;
           }
@@ -219,15 +217,11 @@ $(document).ready(function () {
           {
             $(element.node).stop().animate({
               top: $(element.node).getAnimationYOffset('center') + 'px',
-              left: $(element.node).getAnimationXOffset('right') + 'px',
-              opacity: opacity
+              left: $(element.node).getAnimationXOffset('right') + 'px'
             }, speed);
             break;
           }
           default:
-            $(element.node).stop().animate({
-              opacity: opacity
-            }, speed);
             break;
         }
         element.triggered = true;
@@ -314,24 +308,10 @@ $(document).ready(function () {
       }
     }
 
-    function prepareFade(node, fade) {
-      switch (fade) {
-        case FADE_F1:
-        {
-          node.css({
-            opacity: 0
-          });
-          break;
-        }
-        default:
-          break;
-      }
-    }
-
-
     function init() {
 
       visibleAnimationElements = [];
+      animationElements = [];
 
       $('.has-animationeffects').each(function (index) {
 
@@ -343,19 +323,23 @@ $(document).ready(function () {
 
           if (node !== null) {
 
-            var src = node.data('src');
             var effect = node.data('effect');
             var fade = node.data('fade');
             var startposition = node.data('startposition');
             var speed = node.data('speed');
             var viewport = node.data('viewport');
+            var hide = node.data('hide');
+            var animateCss = node.data('animationcss');
+            var animateCssOptions = [];
+            if (animateCss !== '') {
+              animateCssOptions = animateCss.split(';');
+            }
 
-            node.css({
-              //backgroundImage: 'url(' + src + ')'
-            });
+            if (hide === 1) {
+              $(node).hide();
+            }
 
             prepareEffect(node, startposition);
-            prepareFade(node, fade);
 
             animationElements.push({
               node: node[0],
@@ -363,7 +347,8 @@ $(document).ready(function () {
               fade: fade,
               startposition: startposition,
               speed: speed,
-              viewport: viewport
+              viewport: viewport,
+              animateCssOptions: animateCssOptions
             });
 
             processAnimation();

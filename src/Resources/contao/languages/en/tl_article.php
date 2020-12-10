@@ -33,6 +33,7 @@ $GLOBALS['TL_LANG']['tl_article']['vParallax_options'] = array(
 $GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'] = array('activate Animations-Effekte', '');
 $GLOBALS['TL_LANG']['tl_article']['animationeffects'] = array('Animations-Effects', '');
 $GLOBALS['TL_LANG']['tl_article']['animation_image'] = array('Image', 'Please select an image');
+$GLOBALS['TL_LANG']['tl_article']['animation_hide_before_viewport'] = array('Hide before viewport', 'Hide Element before come to viewport');
 $GLOBALS['TL_LANG']['tl_article']['animation_viewport'] = array('Viewport-Offset', 'Please select an offset');
 $GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'] = array(
     '0' => 'Viewport + 0 percent',
@@ -70,11 +71,6 @@ $GLOBALS['TL_LANG']['tl_article']['animation_effect_options'] = array(
     'e7' => 'middle/left',
     'e8' => 'middle/middle',
     'e9' => 'middle/right',
-);
-$GLOBALS['TL_LANG']['tl_article']['animation_fade'] = array('Fade-Effect', 'Please select an effect');
-$GLOBALS['TL_LANG']['tl_article']['animation_fade_options'] = array(
-    'f1' => 'fadeIn',
-    'f2' => 'fadeOut',
 );
 $GLOBALS['TL_LANG']['tl_article']['animation_speed'] = array('Effect-Speed', 'Please select a speed');
 $GLOBALS['TL_LANG']['tl_article']['animation_speed_options'] = array(
