@@ -4,6 +4,10 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
 use Alpdesk\AlpdeskParallax\AlpdeskParallaxBundle;
 
+if(TL_MODE == 'BE') {
+  $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskbackend.css';
+}
+
 PaletteManipulator::create()
         ->addLegend('backgroundparallaximage_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
         ->addField('hasParallaxBackgroundImage', 'backgroundparallaximage_legend', PaletteManipulator::POSITION_APPEND)
