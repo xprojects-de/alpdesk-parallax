@@ -22,7 +22,11 @@ Bei aktiviertem Parallax animiert/bewegt das Bundle das Bild dann automatisch in
 ### Animations-Effekte (Legend: Animations-Effekte)
 
 Neben der Hintergrund-Parallax-Funktionalität stehen noch weitere Bild-Animations-Effekte zur Verfügung.
+
 So kann z.B. ein Bild quer über den Bildschirm fahren wenn der Viewport des Artikels erreicht ist.
+Ebenso ist der volle Umfang von Animate.css integriert und kann als Effekt ausgewählt werden.
+(see https://animate.style/)
+
 Diese Animationen sind unabhängig vom Parallax-Effekt und werden immer nur einmalig getrigger.
 
 Es können mehrere Animations-Effekte pro Artikel angegeben werden (MultiColumnWizard).
