@@ -8,10 +8,13 @@
   z-index: -199;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: auto;
-  background-position-x: left;
-  background-position-y: top;
-  background-repeat: no-repeat;
+  animation-duration: 5s;
+}
+
+.has-animationeffects .animation-effect-foreground {
+  z-index: 1;
+}
+
+.has-animationeffects .animation-effect-hide {
+  display: none;
 }

@@ -23,7 +23,7 @@ class HooksListener {
 
     $jqueryAdded = false;
 
-    $objArticleParallax = ArticleModel::findBy(array('pid=?', 'hasParallaxBackgroundImage=?'), array($objPage->id, 1));
+    $objArticleParallax = ArticleModel::findBy(array('pid=?', 'published=?', 'hasParallaxBackgroundImage=?'), array($objPage->id, 1, 1));
     if ($objArticleParallax !== null) {
       if (!$objLayout->addJQuery) {
         $GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.js|static';
@@ -33,13 +33,14 @@ class HooksListener {
       $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskparallax.css';
     }
 
-    $objArticleAnimations = ArticleModel::findBy(array('pid=?', 'hasAnimationeffects=?'), array($objPage->id, 1));
+    $objArticleAnimations = ArticleModel::findBy(array('pid=?', 'published=?', 'hasAnimationeffects=?'), array($objPage->id, 1, 1));
     if ($objArticleAnimations !== null) {
       if (!$objLayout->addJQuery && $jqueryAdded == false) {
         $GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.js|static';
       }
       $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskanimationeffects.js|async';
       $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
+      $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
     }
   }
 
@@ -49,6 +50,18 @@ class HooksListener {
       $rootDir = System::getContainer()->getParameter('kernel.project_dir');
       $imageFactory = System::getContainer()->get('contao.image.image_factory');
       return $imageFactory->create($rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size))->getUrl($rootDir);
+    } catch (\Exception $ex) {
+      return null;
+    }
+  }
+
+  private function getMeta($path) {
+    try {
+      $objMetaModel = (Validator::isUuid($path)) ? FilesModel::findByUuid($path) : FilesModel::findByPath($path);
+      if ($objMetaModel !== null && $objMetaModel->meta !== null) {
+        return StringUtil::deserialize($objMetaModel->meta);
+      }
+      return null;
     } catch (\Exception $ex) {
       return null;
     }
@@ -70,8 +83,31 @@ class HooksListener {
     $templateAnimation->viewport = $dataItem['animation_viewport'];
     $templateAnimation->startposition = $dataItem['animation_startposition'];
     $templateAnimation->effect = $dataItem['animation_effect'];
-    $templateAnimation->fade = $dataItem['animation_fade'];
     $templateAnimation->speed = $dataItem['animation_speed'];
+    $templateAnimation->hide = ($dataItem['animation_hide_before_viewport'] == 1 ? true : false);
+    $templateAnimation->foreground = ($dataItem['animation_zindex'] == 1 ? true : false);
+    $templateAnimation->animationCss = '';
+    if (\array_key_exists('animation_animatecss', $dataItem) && \is_array($dataItem['animation_animatecss']) && \count($dataItem['animation_animatecss'] > 0)) {
+      $templateAnimation->animationCss = implode(';', $dataItem['animation_animatecss']);
+    }
+
+    $templateAnimation->metaTitle = '';
+    $templateAnimation->metaAlt = '';
+    $templateAnimation->metaLink = '';
+    $templateAnimation->metaCaption = '';
+    $meta = $this->getMeta($dataItem['animation_image']);
+    if ($meta !== null) {
+      $currentLang = str_replace('-', '_', $GLOBALS['TL_LANGUAGE'] ?? 'en');
+      foreach ($meta as $key => $value) {
+        if ($key === $currentLang) {
+          $templateAnimation->metaTitle = $value['title'];
+          $templateAnimation->metaAlt = $value['alt'];
+          $templateAnimation->metaLink = $value['link'];
+          $templateAnimation->metaCaption = $value['caption'];
+          break;
+        }
+      }
+    }
 
     return $templateAnimation;
   }

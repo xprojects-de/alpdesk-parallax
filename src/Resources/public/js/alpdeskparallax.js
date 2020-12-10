@@ -98,15 +98,15 @@ $(document).ready(function () {
         backgroundPositionY: motion + 'px'
       });
 
-      var motion_h = '';
+      var motion_h = hAlign;
       if (vParallax === 'left' && element.hAlign !== 'center') {
-        motion_h = ' ' + (-motion) + 'px';
+        motion_h = (-motion) + 'px';
       } else if (vParallax === 'right' && element.hAlign !== 'center') {
-        motion_h = ' ' + (motion) + 'px';
+        motion_h = ($(window).width() - motion) + 'px';
       }
 
       $(element.node).css({
-        backgroundPositionX: hAlign + motion_h
+        backgroundPositionX: motion_h
       });
 
     }
