@@ -22,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasParallaxBac
 $GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasParallaxBackgroundImage'] = 'singleSRC,size,sizemodus,hAlign,vAlign,vParallax,isParallax';
 
 $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasAnimationeffects';
-$GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasAnimationeffects'] = 'animationeffects';
+$GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasAnimationeffects'] = 'ignoreReducedAnimationMotion,animationeffects';
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['hasParallaxBackgroundImage'] = array
     (
@@ -130,6 +130,14 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['hasAnimationeffects'] = array
     'eval' => array(
         'submitOnChange' => true,
     ),
+    'sql' => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_article']['fields']['ignoreReducedAnimationMotion'] = array
+    (
+    'label' => &$GLOBALS['TL_LANG']['tl_article']['ignoreReducedAnimationMotion'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
     'sql' => "char(1) NOT NULL default ''"
 );
 

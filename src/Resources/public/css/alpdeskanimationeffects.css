@@ -18,3 +18,9 @@
 .has-animationeffects .animation-effect-hide {
   display: none;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .has-animationeffects .animation-effect-reducedmotion {
+    display: none;
+  }
+}

@@ -329,6 +329,7 @@ $(document).ready(function () {
             var speed = node.data('speed');
             var viewport = node.data('viewport');
             var hide = node.data('hide');
+            var ignoremotionreduce = node.data('ignoremotionreduce');
             var animateCss = node.data('animationcss');
             var animateCssOptions = [];
             if (animateCss !== '') {
@@ -341,29 +342,45 @@ $(document).ready(function () {
 
             prepareEffect(node, startposition);
 
-            animationElements.push({
-              node: node[0],
-              effect: effect,
-              fade: fade,
-              startposition: startposition,
-              speed: speed,
-              viewport: viewport,
-              animateCssOptions: animateCssOptions
-            });
+            var push = true;
 
-            processAnimation();
+            if (ignoremotionreduce !== 1) {
+              const mediaQueryMotionReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+              if (!mediaQueryMotionReduce || mediaQueryMotionReduce.matches === true) {
+                push = false;
+                $(node).hide();
+              }
+            }
+
+            if (push === true) {
+              animationElements.push({
+                node: node[0],
+                effect: effect,
+                fade: fade,
+                startposition: startposition,
+                speed: speed,
+                viewport: viewport,
+                animateCssOptions: animateCssOptions
+              });
+            }
 
           }
 
         });
 
       });
+
+      if (animationElements.length > 0) {
+        processAnimation();
+      }
+
     }
 
     init();
 
-    if (!animationElements.length)
+    if (!animationElements.length) {
       return;
+    }
 
     $(window).on('scroll', processAnimation);
     $(window).on('resize', init);
