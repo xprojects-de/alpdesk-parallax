@@ -45,7 +45,7 @@ $GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_effect_options'] = [
     'e8' => 'mitte/mitte',
     'e9' => 'mitte/rechts',
 ];
-$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecss'] = ['AnimateCss-Effekte', 'Bitte wählen sie einen Effect aus'];
+$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecssoptions'] = ['AnimateCss-Effekte', 'Bitte wählen sie einen Effect aus'];
 $GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_speed'] = ['Effekt-Geschwindigkeit', 'Bitte wählen sie eine Geschwindigkeit aus'];
 $GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_speed_options'] = [
     'slow' => 'langsam',

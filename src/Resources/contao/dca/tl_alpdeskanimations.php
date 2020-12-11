@@ -65,7 +65,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
         ]
     ],
     'palettes' => [
-        'default' => 'title,published;ignoreReducedAnimationMotion;animation_viewport;animation_hide_before_viewport,animation_zindex;animation_startposition,animation_speed,animation_effect,animation_animatecss;cssID'
+        'default' => 'title,published;ignoreReducedAnimationMotion;animation_viewport;animation_hide_before_viewport,animation_zindex;animation_startposition,animation_speed,animation_effect,animation_animatecssoptions;cssID'
     ],
     'fields' => [
         'id' => [
@@ -143,13 +143,13 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(20) NOT NULL default ''"
         ],
-        'animation_animatecss' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecss'],
+        'animation_animatecssoptions' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecssoptions'],
             'exclude' => true,
-            'inputType' => 'checkbox',
+            'inputType' => 'select',
             'options' => AlpdeskParallaxUtils::$animationCssOptions,
-            'eval' => ['includeBlankOption' => true, 'multiple' => true, 'tl_class' => 'clr'],
-            'sql' => "mediumtext NULL"
+            'eval' => ['includeBlankOption' => true, 'multiple' => false, 'tl_class' => 'clr'],
+            'sql' => "varchar(50) NOT NULL default ''"
         ],
         'cssID' => [
             'exclude' => true,
