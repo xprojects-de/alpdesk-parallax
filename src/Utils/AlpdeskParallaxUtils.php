@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskParallax\Utils;
 
 use Contao\Backend;
-use Contao\DataContainer;
 use Contao\Image;
 use Contao\Input;
 use Contao\Database;
