@@ -2,11 +2,6 @@
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
-use Alpdesk\AlpdeskParallax\AlpdeskParallaxBundle;
-
-if(TL_MODE == 'BE') {
-  $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskbackend.css';
-}
 
 PaletteManipulator::create()
         ->addLegend('backgroundparallaximage_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
@@ -22,182 +17,108 @@ $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasParallaxBac
 $GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasParallaxBackgroundImage'] = 'singleSRC,size,sizemodus,hAlign,vAlign,vParallax,isParallax';
 
 $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasAnimationeffects';
-$GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasAnimationeffects'] = 'ignoreReducedAnimationMotion,animationeffects';
+$GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasAnimationeffects'] = 'alpdeskanimation';
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['hasParallaxBackgroundImage'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['hasParallaxBackgroundImage'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['hasParallaxBackgroundImage'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => array(
-        'submitOnChange' => true,
-    ),
+    'eval' => ['submitOnChange' => true],
     'sql' => "char(1) NOT NULL default ''"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['singleSRC'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['singleSRC'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['singleSRC'],
     'exclude' => true,
     'inputType' => 'fileTree',
-    'eval' => array(
+    'eval' => [
         'filesOnly' => true,
         'fieldType' => 'radio',
         'tl_class' => 'clr',
-    ),
+    ],
     'sql' => "binary(16) NULL"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['size'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['size'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['size'],
     'exclude' => true,
     'inputType' => 'imageSize',
     'reference' => &$GLOBALS['TL_LANG']['MSC'],
-    'eval' => array(
+    'eval' => [
         'rgxp' => 'natural',
         'includeBlankOption' => true,
         'nospace' => true,
         'helpwizard' => true,
         'tl_class' => 'clr w50',
-    ),
+    ],
     'options_callback' => function () {
       return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
     },
     'sql' => "varchar(64) NOT NULL default ''"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['sizemodus'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['sizemodus'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['sizemodus'],
     'exclude' => true,
     'inputType' => 'select',
-    'options' => array('auto', 'cover'),
+    'options' => ['auto', 'cover'],
     'reference' => &$GLOBALS['TL_LANG']['tl_article']['sizemodus_options'],
-    'eval' => array('tl_class' => 'clr w50'),
+    'eval' => ['tl_class' => 'clr w50'],
     'sql' => "varchar(64) NOT NULL default ''"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['hAlign'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['hAlign'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['hAlign'],
     'exclude' => true,
     'inputType' => 'select',
-    'options' => array('left', 'center', 'right'),
+    'options' => ['left', 'center', 'right'],
     'reference' => &$GLOBALS['TL_LANG']['tl_article']['hAlign_options'],
-    'eval' => array('tl_class' => 'clr w50'),
+    'eval' => ['tl_class' => 'clr w50'],
     'sql' => "varchar(64) NOT NULL default ''"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['vAlign'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['vAlign'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['vAlign'],
     'exclude' => true,
     'inputType' => 'select',
-    'options' => array('top', 'center', 'bottom'),
+    'options' => ['top', 'center', 'bottom'],
     'reference' => &$GLOBALS['TL_LANG']['tl_article']['vAlign_options'],
-    'eval' => array('tl_class' => 'w50'),
+    'eval' => ['tl_class' => 'w50'],
     'sql' => "varchar(64) NOT NULL default ''"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['vParallax'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['vParallax'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['vParallax'],
     'exclude' => true,
     'inputType' => 'select',
-    'options' => array('left', 'right'),
+    'options' => ['left', 'right'],
     'reference' => &$GLOBALS['TL_LANG']['tl_article']['vParallax_options'],
-    'eval' => array('tl_class' => 'w50', 'includeBlankOption' => true),
+    'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true],
     'sql' => "varchar(64) NOT NULL default ''"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['isParallax'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['isParallax'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['isParallax'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => array(
-        'tl_class' => 'clr w50 m12'
-    ),
+    'eval' => ['tl_class' => 'clr w50 m12'],
     'sql' => "char(1) NOT NULL default ''"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['hasAnimationeffects'] = array
-    (
+$GLOBALS['TL_DCA']['tl_article']['fields']['hasAnimationeffects'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => array(
-        'submitOnChange' => true,
-    ),
+    'eval' => ['submitOnChange' => true],
     'sql' => "char(1) NOT NULL default ''"
-);
+];
 
-$GLOBALS['TL_DCA']['tl_article']['fields']['ignoreReducedAnimationMotion'] = array
-    (
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['ignoreReducedAnimationMotion'],
+$GLOBALS['TL_DCA']['tl_article']['fields']['alpdeskanimation'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_article']['alpdeskanimation'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'sql' => "char(1) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_article']['fields']['animationeffects'] = array(
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['animationeffects'],
-    'exclude' => true,
-    'inputType' => 'multiColumnWizard',
-    'eval' => [
-        'dragAndDrop' => true,
-        'columnFields' => [
-            'animation_image' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_image'],
-                'exclude' => true,
-                'inputType' => 'fileTree',
-                'eval' => ['multiple' => false, 'fieldType' => 'radio', 'filesOnly' => true, 'extensions' => 'jpg,png,jpeg,gif'],
-            ],
-            'animation_viewport' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_viewport'],
-                'exclude' => true,
-                'inputType' => 'select',
-                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_viewport_options'],
-            ],
-            'animation_hide_before_viewport' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_hide_before_viewport'],
-                'exclude' => true,
-                'inputType' => 'checkbox',
-            ],
-            'animation_zindex' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_zindex'],
-                'exclude' => true,
-                'inputType' => 'checkbox',
-            ],
-            'animation_startposition' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_startposition'],
-                'exclude' => true,
-                'inputType' => 'select',
-                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_startposition_options'],
-            ],
-            'animation_effect' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_effect'],
-                'exclude' => true,
-                'inputType' => 'select',
-                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_effect_options'],
-                'eval' => ['includeBlankOption' => true],
-            ],
-            'animation_animatecss' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_animatecss'],
-                'exclude' => true,
-                'inputType' => 'select',
-                'options' => AlpdeskParallaxBundle::$animationOptions,
-                'eval' => ['includeBlankOption' => true, 'multiple' => true],
-            ],
-            'animation_speed' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_article']['animation_speed'],
-                'exclude' => true,
-                'inputType' => 'select',
-                'options' => &$GLOBALS['TL_LANG']['tl_article']['animation_speed_options'],
-            ]
-        ],
-    ],
-    'sql' => 'blob NULL',
-);
+    'foreignKey' => 'tl_alpdeskanimations.title',
+    'eval' => ['multiple' => true, 'tl_class' => 'clr'],
+    'sql' => "mediumtext NULL"
+];
 
