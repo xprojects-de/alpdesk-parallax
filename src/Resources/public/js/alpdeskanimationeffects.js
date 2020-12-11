@@ -69,6 +69,9 @@ $(document).ready(function () {
     var EFFECT_SPEED_FAST = 'fast';
     var EFFECT_SPEED_FAST_VALUE = 1000;
 
+    var TYPE_ARTICLE = 1;
+    var TYPE_CEELEMENT = 2;
+
     function getSpeed(speed) {
       var s = EFFECT_SPEED_MIDDLE_VALUE;
       switch (speed) {
@@ -100,11 +103,11 @@ $(document).ready(function () {
           visibleAnimationElements.push({
             node: animationElements[i].node,
             effect: animationElements[i].effect,
-            fade: animationElements[i].fade,
             startposition: animationElements[i].startposition,
             speed: animationElements[i].speed,
             viewport: animationElements[i].viewport,
             animateCssOptions: animationElements[i].animateCssOptions,
+            type: animationElements[i].type,
             triggered: false
           });
         }
@@ -137,6 +140,11 @@ $(document).ready(function () {
         var speed = getSpeed(element.speed);
 
         $(element.node).show();
+        if (element.type === TYPE_CEELEMENT) {
+          $(element.node).css({
+            opacity: 1
+          });
+        }
 
         if (element.animateCssOptions.length > 0) {
           $(element.node).css({
@@ -313,18 +321,17 @@ $(document).ready(function () {
       visibleAnimationElements = [];
       animationElements = [];
 
-      $('.has-animationeffects').each(function (index) {
+      $('.has-animationeffects').each(function () {
 
         var el = $(this);
 
-        el.find('div.animation-effect').each(function (index) {
+        el.find('div.animation-effect').each(function () {
 
           var node = $(this);
 
           if (node !== null) {
 
             var effect = node.data('effect');
-            var fade = node.data('fade');
             var startposition = node.data('startposition');
             var speed = node.data('speed');
             var viewport = node.data('viewport');
@@ -356,17 +363,52 @@ $(document).ready(function () {
               animationElements.push({
                 node: node[0],
                 effect: effect,
-                fade: fade,
                 startposition: startposition,
                 speed: speed,
                 viewport: viewport,
-                animateCssOptions: animateCssOptions
+                animateCssOptions: animateCssOptions,
+                type: TYPE_ARTICLE
               });
             }
 
           }
 
         });
+
+      });
+
+      $('.animation-effect-ce').each(function () {
+
+        var node = $(this);
+
+        if (node !== null) {
+
+          var speed = node.data('speed');
+          var viewport = node.data('viewport');
+          var hide = node.data('hide');
+          var animateCss = node.data('animationcss');
+          var animateCssOptions = [];
+          if (animateCss !== '') {
+            animateCssOptions = animateCss.split(';');
+          }
+
+          if (hide === 1) {
+            $(node).css({
+              opacity: 0
+            });
+          }
+
+          animationElements.push({
+            node: node[0],
+            effect: '',
+            startposition: '',
+            speed: speed,
+            viewport: viewport,
+            animateCssOptions: animateCssOptions,
+            type: TYPE_CEELEMENT
+          });
+
+        }
 
       });
 

@@ -16,6 +16,8 @@ use Contao\File;
 use Contao\StringUtil;
 use Contao\Validator;
 use Contao\System;
+use Contao\ContentModel;
+use Alpdesk\AlpdeskParallax\Model\AlpdeskanimationsModel;
 
 class HooksListener {
 
@@ -55,59 +57,49 @@ class HooksListener {
     }
   }
 
-  private function getMeta($path) {
-    try {
-      $objMetaModel = (Validator::isUuid($path)) ? FilesModel::findByUuid($path) : FilesModel::findByPath($path);
-      if ($objMetaModel !== null && $objMetaModel->meta !== null) {
-        return StringUtil::deserialize($objMetaModel->meta);
-      }
-      return null;
-    } catch (\Exception $ex) {
-      return null;
-    }
-  }
+  private function appendAnimationEffect(int $animationItemId) {
 
-  private function appendAnimationEffect(array $dataItem, $ignoreReducedAnimationMotion) {
-
-    if ($dataItem['animation_image'] === '') {
+    if ($animationItemId <= 0) {
       return null;
     }
 
-    $imageSrc = $this->getImage($dataItem['animation_image']);
-    if ($imageSrc === null || $imageSrc === '') {
+    $animationModel = AlpdeskanimationsModel::findBy(array('id=?', 'published=?'), array($animationItemId, 1));
+    if ($animationModel == null) {
       return null;
+    }
+
+    $contentModel = ContentModel::findBy(array('pid=?', 'ptable=?', 'invisible!=?'), array($animationModel->id, 'tl_alpdeskanimations', 1));
+    if ($contentModel == null) {
+      return null;
+    }
+
+    $animationContentElements = [];
+    foreach ($contentModel as $element) {
+      array_push($animationContentElements, $element->id);
     }
 
     $templateAnimation = new FrontendTemplate('animation_container');
-    $templateAnimation->src = Environment::get('base') . $imageSrc;
-    $templateAnimation->viewport = $dataItem['animation_viewport'];
-    $templateAnimation->startposition = $dataItem['animation_startposition'];
-    $templateAnimation->effect = $dataItem['animation_effect'];
-    $templateAnimation->speed = $dataItem['animation_speed'];
-    $templateAnimation->hide = ($dataItem['animation_hide_before_viewport'] == 1 ? true : false);
-    $templateAnimation->foreground = ($dataItem['animation_zindex'] == 1 ? true : false);
-    $templateAnimation->ignoreReducedAnimationMotion = ($ignoreReducedAnimationMotion == 1 ? true : false);
-    $templateAnimation->animationCss = '';
-    if (\array_key_exists('animation_animatecss', $dataItem) && \is_array($dataItem['animation_animatecss']) && \count($dataItem['animation_animatecss'] > 0)) {
-      $templateAnimation->animationCss = implode(';', $dataItem['animation_animatecss']);
+    $cssID = '';
+    $cssClass = '';
+    $cssIDClass = StringUtil::deserialize($animationModel->cssID);
+    if ($cssIDClass !== null && \is_array($cssIDClass) && \count($cssIDClass) == 2) {
+      $cssID = $cssIDClass[0];
+      $cssClass = $cssIDClass[1];
     }
-
-    $templateAnimation->metaTitle = '';
-    $templateAnimation->metaAlt = '';
-    $templateAnimation->metaLink = '';
-    $templateAnimation->metaCaption = '';
-    $meta = $this->getMeta($dataItem['animation_image']);
-    if ($meta !== null) {
-      $currentLang = str_replace('-', '_', $GLOBALS['TL_LANGUAGE'] ?? 'en');
-      foreach ($meta as $key => $value) {
-        if ($key === $currentLang) {
-          $templateAnimation->metaTitle = $value['title'];
-          $templateAnimation->metaAlt = $value['alt'];
-          $templateAnimation->metaLink = $value['link'];
-          $templateAnimation->metaCaption = $value['caption'];
-          break;
-        }
-      }
+    $templateAnimation->cssID = $cssID;
+    $templateAnimation->cssClass = $cssClass;
+    $templateAnimation->viewport = $animationModel->animation_viewport;
+    $templateAnimation->startposition = $animationModel->animation_startposition;
+    $templateAnimation->effect = $animationModel->animation_effect;
+    $templateAnimation->speed = $animationModel->animation_speed;
+    $templateAnimation->hide = ($animationModel->animation_hide_before_viewport == 1 ? true : false);
+    $templateAnimation->foreground = ($animationModel->animation_zindex == 1 ? true : false);
+    $templateAnimation->ignoreReducedAnimationMotion = ($animationModel->ignoreReducedAnimationMotion == 1 ? true : false);
+    $templateAnimation->animationContentElements = $animationContentElements;
+    $templateAnimation->animationCss = '';
+    $animationCss = StringUtil::deserialize($animationModel->animation_animatecss);
+    if ($animationCss !== null && \is_array($animationCss) && \count($animationCss) > 0) {
+      $templateAnimation->animationCss = implode(';', $animationCss);
     }
 
     return $templateAnimation;
@@ -136,12 +128,14 @@ class HooksListener {
 
     if (TL_MODE == 'FE' && $arrData['hasAnimationeffects'] == 1) {
       $elements = $objTemplate->elements;
-      $animationItems = StringUtil::deserialize($arrData['animationeffects']);
-      if (\is_array($animationItems) && \count($animationItems) > 0) {
-        foreach ($animationItems as $animationItem) {
-          $effect = $this->appendAnimationEffect($animationItem, $arrData['ignoreReducedAnimationMotion']);
-          if ($effect !== null) {
-            array_unshift($elements, $effect->parse());
+      if (\array_key_exists('alpdeskanimation', $arrData) && $arrData['alpdeskanimation'] != '') {
+        $animationItems = StringUtil::deserialize($arrData['alpdeskanimation']);
+        if (\is_array($animationItems) && \count($animationItems) > 0) {
+          foreach ($animationItems as $animationItem) {
+            $effect = $this->appendAnimationEffect(\intval($animationItem));
+            if ($effect !== null) {
+              array_unshift($elements, $effect->parse());
+            }
           }
         }
       }
@@ -163,6 +157,59 @@ class HooksListener {
       $arrClasses = array('has-animationeffects');
       $objTemplate->class .= ' ' . implode(' ', $arrClasses);
     }
+  }
+
+  public function onGetContentElement(ContentModel $element, string $buffer): string {
+
+    if (TL_MODE == 'FE' && $element->hasAnimationeffects == 1) {
+
+      $matchesJs = \array_filter($GLOBALS['TL_JAVASCRIPT'], function($v) {
+        return strpos($v, 'alpdeskanimationeffects.js');
+      });
+      if (count($matchesJs) == 0) {
+        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskanimationeffects.js|async';
+      }
+
+      $matchesCss = \array_filter($GLOBALS['TL_CSS'], function($v) {
+        return strpos($v, 'alpdeskanimationeffects.css');
+      });
+      if (count($matchesCss) == 0) {
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
+      }
+
+      $animationCss = StringUtil::deserialize($element->animation_animatecss);
+      if ($animationCss !== null && \is_array($animationCss) && \count($animationCss) > 0) {
+
+        $classes = 'animation-effect-ce' . ($element->animation_hide_before_viewport == 1 ? ' animation-effect-hide' : '');
+
+        $dataAttributes = \array_filter([
+            'data-animationcss' => implode(';', $animationCss),
+            'data-hide' => ($element->animation_hide_before_viewport == 1 ? 1 : 0),
+            'data-viewport' => $element->animation_viewport,
+            'data-speed' => $element->animation_speed], function ($v) {
+          return null !== $v;
+        });
+
+        $buffer = \preg_replace_callback('|<([a-zA-Z0-9]+)(\s[^>]*?)?(?<!/)>|', function ($matches) use ($classes, $dataAttributes) {
+          $tag = $matches[1];
+          $attributes = $matches[2];
+
+          $attributes = preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
+          if (0 === $count) {
+            $attributes .= ' class="' . $classes . '"';
+          }
+
+          foreach ($dataAttributes as $key => $value) {
+            $attributes .= ' ' . $key . '="' . $value . '"';
+          }
+
+          return "<{$tag}{$attributes}>";
+        }, $buffer, 1);
+      }
+    }
+
+    return $buffer;
   }
 
 }
