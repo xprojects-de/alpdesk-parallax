@@ -163,6 +163,21 @@ class HooksListener {
 
     if (TL_MODE == 'FE' && $element->hasAnimationeffects == 1) {
 
+      $matchesJs = \array_filter($GLOBALS['TL_JAVASCRIPT'], function($v) {
+        return strpos($v, 'alpdeskanimationeffects.js');
+      });
+      if (count($matchesJs) == 0) {
+        $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskanimationeffects.js|async';
+      }
+
+      $matchesCss = \array_filter($GLOBALS['TL_CSS'], function($v) {
+        return strpos($v, 'alpdeskanimationeffects.css');
+      });
+      if (count($matchesCss) == 0) {
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
+        $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
+      }
+
       $animationCss = StringUtil::deserialize($element->animation_animatecss);
       if ($animationCss !== null && \is_array($animationCss) && \count($animationCss) > 0) {
 
