@@ -160,6 +160,40 @@ class HooksListener {
   }
 
   public function onGetContentElement(ContentModel $element, string $buffer): string {
+
+    if (TL_MODE == 'FE' && $element->hasAnimationeffects == 1) {
+
+      $animationCss = StringUtil::deserialize($element->animation_animatecss);
+      if ($animationCss !== null && \is_array($animationCss) && \count($animationCss) > 0) {
+
+        $classes = 'animation-effect-ce' . ($element->animation_hide_before_viewport == 1 ? ' animation-effect-hide' : '');
+
+        $dataAttributes = \array_filter([
+            'data-animationcss' => implode(';', $animationCss),
+            'data-hide' => ($element->animation_hide_before_viewport == 1 ? 1 : 0),
+            'data-viewport' => $element->animation_viewport,
+            'data-speed' => $element->animation_speed], function ($v) {
+          return null !== $v;
+        });
+
+        $buffer = \preg_replace_callback('|<([a-zA-Z0-9]+)(\s[^>]*?)?(?<!/)>|', function ($matches) use ($classes, $dataAttributes) {
+          $tag = $matches[1];
+          $attributes = $matches[2];
+
+          $attributes = preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
+          if (0 === $count) {
+            $attributes .= ' class="' . $classes . '"';
+          }
+
+          foreach ($dataAttributes as $key => $value) {
+            $attributes .= ' ' . $key . '="' . $value . '"';
+          }
+
+          return "<{$tag}{$attributes}>";
+        }, $buffer, 1);
+      }
+    }
+
     return $buffer;
   }
 
