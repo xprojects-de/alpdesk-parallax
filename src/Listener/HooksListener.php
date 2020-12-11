@@ -97,9 +97,9 @@ class HooksListener {
     $templateAnimation->ignoreReducedAnimationMotion = ($animationModel->ignoreReducedAnimationMotion == 1 ? true : false);
     $templateAnimation->animationContentElements = $animationContentElements;
     $templateAnimation->animationCss = '';
-    $animationCss = StringUtil::deserialize($animationModel->animation_animatecss);
-    if ($animationCss !== null && \is_array($animationCss) && \count($animationCss) > 0) {
-      $templateAnimation->animationCss = implode(';', $animationCss);
+    $animationCss = $animationModel->animation_animatecssoptions;
+    if ($animationCss !== null && $animationCss != '') {
+      $templateAnimation->animationCss = $animationCss;
     }
 
     return $templateAnimation;
@@ -178,13 +178,13 @@ class HooksListener {
         $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
       }
 
-      $animationCss = StringUtil::deserialize($element->animation_animatecss);
-      if ($animationCss !== null && \is_array($animationCss) && \count($animationCss) > 0) {
+      $animationCss = $element->animation_animatecssoptions;
+      if ($animationCss !== null && $animationCss != '') {
 
         $classes = 'animation-effect-ce' . ($element->animation_hide_before_viewport == 1 ? ' animation-effect-hide' : '');
 
         $dataAttributes = \array_filter([
-            'data-animationcss' => implode(';', $animationCss),
+            'data-animationcss' => $animationCss,
             'data-hide' => ($element->animation_hide_before_viewport == 1 ? 1 : 0),
             'data-viewport' => $element->animation_viewport,
             'data-speed' => $element->animation_speed], function ($v) {

@@ -146,14 +146,12 @@ $(document).ready(function () {
           });
         }
 
-        if (element.animateCssOptions.length > 0) {
+        if (element.animateCssOptions !== '') {
           $(element.node).css({
             animationDuration: speed + 'ms'
           });
           $(element.node).addClass('animate__animated');
-          for (var i = 0; i < element.animateCssOptions.length; i++) {
-            $(element.node).addClass('animate__' + element.animateCssOptions[i]);
-          }
+          $(element.node).addClass('animate__' + element.animateCssOptions);
         }
 
         switch (element.effect) {
@@ -337,11 +335,7 @@ $(document).ready(function () {
             var viewport = node.data('viewport');
             var hide = node.data('hide');
             var ignoremotionreduce = node.data('ignoremotionreduce');
-            var animateCss = node.data('animationcss');
-            var animateCssOptions = [];
-            if (animateCss !== '') {
-              animateCssOptions = animateCss.split(';');
-            }
+            var animateCssOptions = node.data('animationcss');
 
             if (hide === 1) {
               $(node).hide();
@@ -386,11 +380,7 @@ $(document).ready(function () {
           var speed = node.data('speed');
           var viewport = node.data('viewport');
           var hide = node.data('hide');
-          var animateCss = node.data('animationcss');
-          var animateCssOptions = [];
-          if (animateCss !== '') {
-            animateCssOptions = animateCss.split(';');
-          }
+          var animateCssOptions = node.data('animationcss');
 
           if (hide === 1) {
             $(node).css({

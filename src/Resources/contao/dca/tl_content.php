@@ -24,7 +24,7 @@ $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = function (Data
 };
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'hasAnimationeffects';
-$GLOBALS['TL_DCA']['tl_content']['subpalettes']['hasAnimationeffects'] = 'animation_hide_before_viewport,animation_viewport,animation_speed,animation_animatecss';
+$GLOBALS['TL_DCA']['tl_content']['subpalettes']['hasAnimationeffects'] = 'animation_hide_before_viewport,animation_viewport,animation_speed,animation_animatecssoptions';
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['hasAnimationeffects'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_content']['hasAnimationeffects'],
@@ -60,11 +60,11 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['animation_speed'] = [
     'sql' => "varchar(20) NOT NULL default ''"
 ];
 
-$GLOBALS['TL_DCA']['tl_content']['fields']['animation_animatecss'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecss'],
+$GLOBALS['TL_DCA']['tl_content']['fields']['animation_animatecssoptions'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecssoptions'],
     'exclude' => true,
-    'inputType' => 'checkbox',
+    'inputType' => 'select',
     'options' => AlpdeskParallaxUtils::$animationCssOptions,
-    'eval' => ['includeBlankOption' => true, 'multiple' => true, 'tl_class' => 'clr'],
-    'sql' => "mediumtext NULL"
+    'eval' => ['includeBlankOption' => true, 'multiple' => false, 'tl_class' => 'clr'],
+    'sql' => "varchar(50) NOT NULL default ''"
 ];
