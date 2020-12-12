@@ -25,10 +25,13 @@ $(document).ready(function () {
     var parallaxElements = [];
     var visibleElements = [];
     var processParallaxScheduled;
-    var factor = 0.2;
+    var factor = 0.25;
 
-    function prepareBackgroundvAlign(nodeHeight, srcHeight, vAlign) {
+    function prepareBackgroundvAlign(nodeHeight, srcHeight, vAlign, sizeModus) {
       var yPos = 0; // top
+      if (sizeModus === 'cover') {
+        return yPos;
+      }
       if (vAlign === 'center') {
         yPos = Math.floor((nodeHeight / 2) - (srcHeight / 2));
       } else if (vAlign === 'bottom') {
@@ -116,7 +119,7 @@ $(document).ready(function () {
       parallaxElements = [];
       visibleElements = [];
 
-      $('.has-responsive-background-image').each(function (index) {
+      $('.has-responsive-background-image').each(function () {
 
         var el = $(this);
         var node = el.find('div.parallax-bgimage');
@@ -140,8 +143,7 @@ $(document).ready(function () {
             var elementH = $(this).outerHeight();
 
             if (sizeModus === 'cover') {
-
-              var coverH = elementH + ((factor * $(window).height()) * 2);
+              var coverH = elementH + (elementH * factor) + (factor * $(window).height());
               var coverTop = -(coverH - elementH);
               node.height(coverH);
               node.css({
@@ -150,7 +152,7 @@ $(document).ready(function () {
               });
             }
 
-            node.attr('data-parallax-valign', prepareBackgroundvAlign(node.height(), srcHeight, vAlign));
+            node.attr('data-parallax-valign', prepareBackgroundvAlign(node.height(), srcHeight, vAlign, sizeModus));
             node.attr('data-parallax-halign', hAlign);
 
             parallaxElements.push({
