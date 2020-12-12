@@ -93,7 +93,7 @@ $(document).ready(function () {
       var scrollOffset = $(window).scrollTop() - $(element.parent).getParallaxScrollOffset();
       var motion = (vAlign + (factor * scrollOffset));
 
-      if (element.vAlign === 'bottom') {
+      if (element.vAlign === 'bottom' && element.sizeModus !== 'cover') {
         motion = (vAlign + (-factor * scrollOffset));
       }
 
