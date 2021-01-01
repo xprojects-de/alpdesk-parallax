@@ -11,6 +11,7 @@ use Contao\PageRegular;
 use Contao\FrontendTemplate;
 use Contao\FilesModel;
 use Contao\Template;
+use Contao\Module;
 use Contao\Environment;
 use Contao\File;
 use Contao\StringUtil;
@@ -105,7 +106,7 @@ class HooksListener {
     return $templateAnimation;
   }
 
-  public function onCompileArticle(FrontendTemplate &$objTemplate, array $arrData): void {
+  public function onCompileArticle(FrontendTemplate $objTemplate, array $arrData, Module $module): void {
 
     if (TL_MODE == 'FE' && $arrData['hasParallaxBackgroundImage'] == 1) {
       $tmp = $this->getImage($arrData['singleSRC'], $arrData['size']);
@@ -159,7 +160,7 @@ class HooksListener {
     }
   }
 
-  public function onGetContentElement(ContentModel $element, string $buffer): string {
+  public function onGetContentElement(ContentModel $element, string $buffer, $el): string {
 
     if (TL_MODE == 'FE' && $element->hasAnimationeffects == 1) {
 
