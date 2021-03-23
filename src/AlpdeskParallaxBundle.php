@@ -6,6 +6,7 @@ namespace Alpdesk\AlpdeskParallax;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class AlpdeskParallaxBundle extends Bundle {
-  
+class AlpdeskParallaxBundle extends Bundle
+{
+
 }

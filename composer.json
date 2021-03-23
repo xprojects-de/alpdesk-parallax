@@ -1,7 +1,11 @@
 {
   "name": "alpdesk/alpdesk-parallax",
   "description": "Parallax for Contao 4",
-  "keywords": ["contao", "alpdesk", "Parallax"],
+  "keywords": [
+    "contao",
+    "alpdesk",
+    "Parallax"
+  ],
   "type": "contao-bundle",
   "homepage": "https://github.com/xprojects-de/alpdesk-parallax",
   "license": "LGPL-3.0-or-later",
@@ -24,7 +28,9 @@
     "contao/manager-plugin": "<2.0 || >=3.0"
   },
   "require-dev": {
-    "contao/manager-plugin": "^2.0"
+    "contao/manager-plugin": "^2.0",
+    "vimeo/psalm": "^4.6",
+    "phpstan/phpstan": "^0.12.82"
   },
   "autoload": {
     "psr-4": {
