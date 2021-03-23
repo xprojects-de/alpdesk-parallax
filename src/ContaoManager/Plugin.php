@@ -10,10 +10,11 @@ use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 
-class Plugin implements BundlePluginInterface {
-
-  public function getBundles(ParserInterface $parser) {
-    return [BundleConfig::create(AlpdeskParallaxBundle::class)->setLoadAfter([ContaoCoreBundle::class])];
-  }
+class Plugin implements BundlePluginInterface
+{
+    public function getBundles(ParserInterface $parser)
+    {
+        return [BundleConfig::create(AlpdeskParallaxBundle::class)->setLoadAfter([ContaoCoreBundle::class])];
+    }
 
 }

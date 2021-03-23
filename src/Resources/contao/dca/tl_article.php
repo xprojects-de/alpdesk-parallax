@@ -4,14 +4,14 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
 
 PaletteManipulator::create()
-        ->addLegend('backgroundparallaximage_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
-        ->addField('hasParallaxBackgroundImage', 'backgroundparallaximage_legend', PaletteManipulator::POSITION_APPEND)
-        ->applyToPalette('default', 'tl_article');
+    ->addLegend('backgroundparallaximage_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
+    ->addField('hasParallaxBackgroundImage', 'backgroundparallaximage_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_article');
 
 PaletteManipulator::create()
-        ->addLegend('animationeffect_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
-        ->addField('hasAnimationeffects', 'animationeffect_legend', PaletteManipulator::POSITION_APPEND)
-        ->applyToPalette('default', 'tl_article');
+    ->addLegend('animationeffect_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
+    ->addField('hasAnimationeffects', 'animationeffect_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_article');
 
 $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasParallaxBackgroundImage';
 $GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasParallaxBackgroundImage'] = 'singleSRC,size,sizemodus,hAlign,vAlign,vParallax,isParallax';
@@ -52,7 +52,7 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['size'] = [
         'tl_class' => 'clr w50',
     ],
     'options_callback' => function () {
-      return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
+        return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
     },
     'sql' => "varchar(64) NOT NULL default ''"
 ];

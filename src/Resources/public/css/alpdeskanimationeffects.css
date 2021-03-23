@@ -1,26 +1,26 @@
 
 .has-animationeffects {
-  position: relative;
+    position: relative;
 }
 
 .has-animationeffects .animation-effect {
-  position: absolute;
-  z-index: -199;
-  top: 0;
-  left: 0;
-  animation-duration: 5s;
+    position: absolute;
+    z-index: -199;
+    top: 0;
+    left: 0;
+    animation-duration: 5s;
 }
 
 .has-animationeffects .animation-effect-foreground {
-  z-index: 1;
+    z-index: 1;
 }
 
 .has-animationeffects .animation-effect-hide {
-  display: none;
+    display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .has-animationeffects .animation-effect-reducedmotion {
-    display: none;
-  }
+    .has-animationeffects .animation-effect-reducedmotion {
+        display: none;
+    }
 }
