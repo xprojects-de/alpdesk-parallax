@@ -26,7 +26,7 @@ class HooksListener
     {
         $jqueryAdded = false;
 
-        $objArticleParallax = ArticleModel::findBy(array('pid=?', 'published=?', 'hasParallaxBackgroundImage=?'), array($objPage->id, 1, 1));
+        $objArticleParallax = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasParallaxBackgroundImage=?'), array($objPage->id, 1, 1));
 
         if ($objArticleParallax !== null) {
 
@@ -39,7 +39,7 @@ class HooksListener
             $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskparallax.css';
         }
 
-        $objArticleAnimations = ArticleModel::findBy(array('pid=?', 'published=?', 'hasAnimationeffects=?'), array($objPage->id, 1, 1));
+        $objArticleAnimations = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasAnimationeffects=?'), array($objPage->id, 1, 1));
 
         if ($objArticleAnimations !== null) {
 
@@ -79,7 +79,7 @@ class HooksListener
             return null;
         }
 
-        $contentModel = ContentModel::findBy(array('pid=?', 'ptable=?', 'invisible!=?'), array($animationModel->id, 'tl_alpdeskanimations', 1));
+        $contentModel = ContentModel::findBy(array('tl_content.pid=?', 'tl_content.ptable=?', 'tl_content.invisible!=?'), array($animationModel->id, 'tl_alpdeskanimations', 1));
         if ($contentModel == null) {
             return null;
         }
@@ -197,17 +197,23 @@ class HooksListener
     {
         if (TL_MODE == 'FE' && $element->hasAnimationeffects == 1) {
 
-            $matchesJs = \array_filter($GLOBALS['TL_JAVASCRIPT'], function ($v) {
-                return strpos($v, 'alpdeskanimationeffects.js');
-            });
+            $matchesJs = [];
+            if (isset($GLOBALS['TL_JAVASCRIPT'])) {
+                $matchesJs = \array_filter($GLOBALS['TL_JAVASCRIPT'], function ($v) {
+                    return strpos($v, 'alpdeskanimationeffects.js');
+                });
+            }
 
             if (count($matchesJs) == 0) {
                 $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskanimationeffects.js|async';
             }
 
-            $matchesCss = \array_filter($GLOBALS['TL_CSS'], function ($v) {
-                return strpos($v, 'alpdeskanimationeffects.css');
-            });
+            $matchesCss = [];
+            if (isset($GLOBALS['TL_CSS'])) {
+                $matchesCss = \array_filter($GLOBALS['TL_CSS'], function ($v) {
+                    return strpos($v, 'alpdeskanimationeffects.css');
+                });
+            }
 
             if (count($matchesCss) == 0) {
                 $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
