@@ -1,1 +1,6 @@
 /nbproject/private/
+/.idea/
+/public/
+/.run/
+/vendor/
+/composer.lock
