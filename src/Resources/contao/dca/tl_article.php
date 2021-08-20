@@ -2,6 +2,7 @@
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
+use Contao\BackendUser;
 
 PaletteManipulator::create()
     ->addLegend('backgroundparallaximage_legend', 'syndication_legend', PaletteManipulator::POSITION_BEFORE, true)
