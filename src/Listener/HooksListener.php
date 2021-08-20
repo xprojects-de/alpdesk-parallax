@@ -148,7 +148,9 @@ class HooksListener
      */
     public function onCompileArticle(FrontendTemplate $objTemplate, array $arrData, Module $module): void
     {
-        if ($this->isFrontend() && $arrData['hasParallaxBackgroundImage'] == 1) {
+        $isFrontend = $this->isFrontend();
+
+        if ($isFrontend && $arrData['hasParallaxBackgroundImage'] == 1) {
 
             $tmp = $this->getImage($arrData['singleSRC'], $arrData['size']);
             if ($tmp !== null && $tmp !== '') {
@@ -173,7 +175,7 @@ class HooksListener
             }
         }
 
-        if ($this->isFrontend() && $arrData['hasAnimationeffects'] == 1) {
+        if ($isFrontend && $arrData['hasAnimationeffects'] == 1) {
 
             $elements = $objTemplate->elements;
             if (\array_key_exists('alpdeskanimation', $arrData) && $arrData['alpdeskanimation'] != '') {
@@ -195,7 +197,9 @@ class HooksListener
 
     public function onParseTemplate(Template $objTemplate)
     {
-        if ($this->isFrontend() && $objTemplate->type == 'article' && $objTemplate->hasParallaxBackgroundImage == 1) {
+        $isFrontend = $this->isFrontend();
+
+        if ($isFrontend && $objTemplate->type == 'article' && $objTemplate->hasParallaxBackgroundImage == 1) {
 
             $arrClasses = array('has-responsive-background-image');
 
@@ -206,7 +210,7 @@ class HooksListener
             $objTemplate->class .= ' ' . implode(' ', $arrClasses);
         }
 
-        if ($this->isFrontend() && $objTemplate->type == 'article' && $objTemplate->hasAnimationeffects == 1) {
+        if ($isFrontend && $objTemplate->type == 'article' && $objTemplate->hasAnimationeffects == 1) {
 
             $arrClasses = array('has-animationeffects');
             $objTemplate->class .= ' ' . implode(' ', $arrClasses);
