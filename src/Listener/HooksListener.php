@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskParallax\Listener;
 
 use Contao\ArticleModel;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\LayoutModel;
 use Contao\PageModel;
 use Contao\PageRegular;
@@ -19,9 +20,24 @@ use Contao\Validator;
 use Contao\System;
 use Contao\ContentModel;
 use Alpdesk\AlpdeskParallax\Model\AlpdeskanimationsModel;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class HooksListener
 {
+    private $requestStack;
+    private $scopeMatcher;
+
+    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher)
+    {
+        $this->requestStack = $requestStack;
+        $this->scopeMatcher = $scopeMatcher;
+    }
+
+    private function isFrontend(): bool
+    {
+        return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
+    }
+
     public function onGetPageLayout(PageModel $objPage, LayoutModel $objLayout, PageRegular $objPageRegular): void
     {
         $jqueryAdded = false;
@@ -53,6 +69,11 @@ class HooksListener
         }
     }
 
+    /**
+     * @param $path
+     * @param string $size
+     * @return string|null
+     */
     private function getImage($path, $size = '')
     {
         try {
@@ -127,7 +148,7 @@ class HooksListener
      */
     public function onCompileArticle(FrontendTemplate $objTemplate, array $arrData, Module $module): void
     {
-        if (TL_MODE == 'FE' && $arrData['hasParallaxBackgroundImage'] == 1) {
+        if ($this->isFrontend() && $arrData['hasParallaxBackgroundImage'] == 1) {
 
             $tmp = $this->getImage($arrData['singleSRC'], $arrData['size']);
             if ($tmp !== null && $tmp !== '') {
@@ -152,7 +173,7 @@ class HooksListener
             }
         }
 
-        if (TL_MODE == 'FE' && $arrData['hasAnimationeffects'] == 1) {
+        if ($this->isFrontend() && $arrData['hasAnimationeffects'] == 1) {
 
             $elements = $objTemplate->elements;
             if (\array_key_exists('alpdeskanimation', $arrData) && $arrData['alpdeskanimation'] != '') {
@@ -174,7 +195,7 @@ class HooksListener
 
     public function onParseTemplate(Template $objTemplate)
     {
-        if (TL_MODE == 'FE' && $objTemplate->type == 'article' && $objTemplate->hasParallaxBackgroundImage == 1) {
+        if ($this->isFrontend() && $objTemplate->type == 'article' && $objTemplate->hasParallaxBackgroundImage == 1) {
 
             $arrClasses = array('has-responsive-background-image');
 
@@ -185,7 +206,7 @@ class HooksListener
             $objTemplate->class .= ' ' . implode(' ', $arrClasses);
         }
 
-        if (TL_MODE == 'FE' && $objTemplate->type == 'article' && $objTemplate->hasAnimationeffects == 1) {
+        if ($this->isFrontend() && $objTemplate->type == 'article' && $objTemplate->hasAnimationeffects == 1) {
 
             $arrClasses = array('has-animationeffects');
             $objTemplate->class .= ' ' . implode(' ', $arrClasses);
@@ -195,7 +216,7 @@ class HooksListener
 
     public function onGetContentElement(ContentModel $element, string $buffer, $el): string
     {
-        if (TL_MODE == 'FE' && $element->hasAnimationeffects == 1) {
+        if ($this->isFrontend() && $element->hasAnimationeffects == 1) {
 
             $matchesJs = [];
             if (isset($GLOBALS['TL_JAVASCRIPT'])) {
