@@ -14,7 +14,7 @@ use Contao\System;
 
 class AlpdeskParallaxUtils extends Backend
 {
-    public static $animationCssOptions = [
+    public static array $animationCssOptions = [
         'Attention Seekers' => [
             'bounce',
             'flash',
@@ -145,6 +145,15 @@ class AlpdeskParallaxUtils extends Backend
         ],
     ];
 
+    /**
+     * @param $row
+     * @param $href
+     * @param $label
+     * @param $title
+     * @param $icon
+     * @param $attributes
+     * @return string
+     */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes): string
     {
         if (Input::get('tid') !== null && Input::get('tid') !== '') {
@@ -160,5 +169,7 @@ class AlpdeskParallaxUtils extends Backend
         }
 
         return '<a href="' . self::addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+
     }
+
 }

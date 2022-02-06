@@ -40,11 +40,20 @@ class HooksListener
         $this->rootDir = $rootDir;
     }
 
+    /**
+     * @return bool
+     */
     private function isFrontend(): bool
     {
         return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
     }
 
+    /**
+     * @param PageModel $objPage
+     * @param LayoutModel $objLayout
+     * @param PageRegular $objPageRegular
+     * @return void
+     */
     public function onGetPageLayout(PageModel $objPage, LayoutModel $objLayout, PageRegular $objPageRegular): void
     {
         $jqueryAdded = false;
@@ -74,6 +83,7 @@ class HooksListener
             $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
             $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
         }
+
     }
 
     /**
@@ -100,6 +110,7 @@ class HooksListener
         } catch (\Exception $ex) {
             return null;
         }
+
     }
 
     /**
@@ -157,6 +168,7 @@ class HooksListener
         }
 
         return $templateAnimation;
+
     }
 
     /**
@@ -212,8 +224,13 @@ class HooksListener
 
             $objTemplate->elements = $elements;
         }
+
     }
 
+    /**
+     * @param Template $objTemplate
+     * @return void
+     */
     public function onParseTemplate(Template $objTemplate): void
     {
         $isFrontend = $this->isFrontend();
@@ -235,8 +252,15 @@ class HooksListener
             $objTemplate->class .= ' ' . \implode(' ', $arrClasses);
 
         }
+
     }
 
+    /**
+     * @param ContentModel $element
+     * @param string $buffer
+     * @param $el
+     * @return string
+     */
     public function onGetContentElement(ContentModel $element, string $buffer, $el): string
     {
         if ((int)$element->hasAnimationeffects === 1 && $this->isFrontend()) {
@@ -296,5 +320,7 @@ class HooksListener
         }
 
         return $buffer;
+
     }
+
 }
