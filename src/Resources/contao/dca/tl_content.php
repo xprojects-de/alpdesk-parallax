@@ -6,21 +6,27 @@ use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Alpdesk\AlpdeskParallax\Utils\AlpdeskParallaxUtils;
 
-if (Input::get('do') == 'alpdeskanimations') {
+if (Input::get('do') === 'alpdeskanimations') {
     $GLOBALS['TL_DCA']['tl_content']['config']['ptable'] = 'tl_alpdeskanimations';
 }
 
 Controller::loadLanguageFile('tl_alpdeskanimations');
 
-$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = function (DataContainer $dc): void {
+$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = static function (DataContainer $dc): void {
+
     foreach ($GLOBALS['TL_DCA'][$dc->table]['palettes'] as $key => $palette) {
-        if (\is_string($palette)) {
+
+        if ($key !== '__selector__' && is_string($key)) {
+
             PaletteManipulator::create()
                 ->addLegend('animationeffect_legend', 'expert_legend', PaletteManipulator::POSITION_AFTER, true)
                 ->addField('hasAnimationeffects', 'animationeffect_legend', PaletteManipulator::POSITION_APPEND)
                 ->applyToPalette($key, $dc->table);
+
         }
+
     }
+
 };
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'hasAnimationeffects';

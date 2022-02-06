@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskParallax\Utils;
 
 use Contao\Backend;
+use Contao\Controller;
 use Contao\Image;
 use Contao\Input;
 use Contao\Database;
 use Contao\StringUtil;
+use Contao\System;
 
 class AlpdeskParallaxUtils extends Backend
 {
-    public static $animationCssOptions = [
+    public static array $animationCssOptions = [
         'Attention Seekers' => [
             'bounce',
             'flash',
@@ -143,11 +145,22 @@ class AlpdeskParallaxUtils extends Backend
         ],
     ];
 
+    /**
+     * @param $row
+     * @param $href
+     * @param $label
+     * @param $title
+     * @param $icon
+     * @param $attributes
+     * @return string
+     */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes): string
     {
-        if (Input::get('tid') !== null && strlen(Input::get('tid'))) {
+        if (Input::get('tid') !== null && Input::get('tid') !== '') {
+
             Database::getInstance()->prepare("UPDATE tl_" . Input::get('do') . " SET tstamp=" . time() . ", published='" . (Input::get('state') ? 1 : '') . "' WHERE id=?")->execute(Input::get('tid'));
-            $this->redirect($this->getReferer());
+            Controller::redirect(System::getReferer());
+
         }
 
         $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
@@ -155,6 +168,8 @@ class AlpdeskParallaxUtils extends Backend
             $icon = 'invisible.gif';
         }
 
-        return '<a href="' . $this->addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+        return '<a href="' . self::addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '" ' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+
     }
+
 }

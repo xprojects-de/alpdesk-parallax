@@ -21,16 +21,20 @@
     "issues": "https://github.com/xprojects-de/alpdesk-parallax/issues"
   },
   "require": {
-    "php": ">=7.2",
-    "contao/core-bundle": "^4.9"
+    "php": ">=7.4",
+    "contao/core-bundle": "^4.12"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"
   },
   "require-dev": {
+    "roave/security-advisories": "dev-latest",
+    "phpstan/phpstan": "^0.12.81",
+    "contao/manager-bundle": "^4.12",
     "contao/manager-plugin": "^2.0",
     "vimeo/psalm": "^4.6",
-    "phpstan/phpstan": "^0.12.82"
+    "phpunit/phpunit": "^9.5",
+    "symfony/phpunit-bridge": "^5.2"
   },
   "autoload": {
     "psr-4": {

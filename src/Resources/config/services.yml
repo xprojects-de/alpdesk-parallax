@@ -3,6 +3,7 @@ services:
     arguments:
       - '@request_stack'
       - '@contao.routing.scope_matcher'
+      - '%kernel.project_dir%'
     tags:
       - { name: contao.hook, hook: getPageLayout, method: onGetPageLayout, priority: 0 }
       - { name: contao.hook, hook: compileArticle, method: onCompileArticle, priority: 0 }
