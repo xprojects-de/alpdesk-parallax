@@ -13,12 +13,20 @@ if (Input::get('do') === 'alpdeskanimations') {
 Controller::loadLanguageFile('tl_alpdeskanimations');
 
 $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = static function (DataContainer $dc): void {
+
     foreach ($GLOBALS['TL_DCA'][$dc->table]['palettes'] as $key => $palette) {
-        PaletteManipulator::create()
-            ->addLegend('animationeffect_legend', 'expert_legend', PaletteManipulator::POSITION_AFTER, true)
-            ->addField('hasAnimationeffects', 'animationeffect_legend', PaletteManipulator::POSITION_APPEND)
-            ->applyToPalette($key, $dc->table);
+
+        if ($key !== '__selector__' && is_string($key)) {
+
+            PaletteManipulator::create()
+                ->addLegend('animationeffect_legend', 'expert_legend', PaletteManipulator::POSITION_AFTER, true)
+                ->addField('hasAnimationeffects', 'animationeffect_legend', PaletteManipulator::POSITION_APPEND)
+                ->applyToPalette($key, $dc->table);
+
+        }
+
     }
+
 };
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'hasAnimationeffects';
