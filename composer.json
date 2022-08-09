@@ -21,8 +21,8 @@
     "issues": "https://github.com/xprojects-de/alpdesk-parallax/issues"
   },
   "require": {
-    "php": "^8.0",
-    "contao/core-bundle": "^4.13 | ^5.0"
+    "php": "^7.4 || ^8.0",
+    "contao/core-bundle": "^4.13 || ^5.0"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"
