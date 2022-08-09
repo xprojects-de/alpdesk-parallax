@@ -1,10 +1,12 @@
 <?php
 
 use Alpdesk\AlpdeskParallax\Utils\AlpdeskParallaxUtils;
+use Contao\DataContainer;
+use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'ctable' => ['tl_content'],
         'switchToEdit' => true,
         'enableVersioning' => true,
@@ -17,9 +19,9 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
     ],
     'list' => [
         'sorting' => [
-            'mode' => 2,
+            'mode' => DataContainer::MODE_SORTABLE,
             'fields' => ['title ASC'],
-            'flag' => 1,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'panelLayout' => 'filter,search,limit'
         ],
         'label' => [
@@ -54,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['toggle'],
                 'icon' => 'visible.gif',
                 'attributes' => 'onclick="Backend.getScrollOffset();"',
-                'button_callback' => ['Alpdesk\\AlpdeskParallax\\Utils\\AlpdeskParallaxUtils', 'toggleIcon']
+                'button_callback' => [AlpdeskParallaxUtils::class, 'toggleIcon']
             ],
             'delete' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['delete'],
