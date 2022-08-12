@@ -100,7 +100,7 @@ class HooksListener
                 throw new \Exception();
             }
 
-            $imageFactory = System::getContainer()->get('contao.image.image_factory');
+            $imageFactory = System::getContainer()->get('contao.image.factory');
             if ($imageFactory === null) {
                 throw new \Exception();
             }

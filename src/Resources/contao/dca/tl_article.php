@@ -53,7 +53,7 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['size'] = [
         'tl_class' => 'clr w50',
     ],
     'options_callback' => static function () {
-        return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
+        return System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance());
     },
     'sql' => "varchar(64) NOT NULL default ''"
 ];
