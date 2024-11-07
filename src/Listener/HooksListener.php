@@ -45,7 +45,10 @@ class HooksListener
      */
     private function isFrontend(): bool
     {
-        return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
+        if ($this->requestStack->getCurrentRequest() instanceof \Symfony\Component\HttpFoundation\Request) {
+            return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
+        }
+        return false;
     }
 
     /**
