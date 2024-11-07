@@ -20,6 +20,7 @@ use Contao\Validator;
 use Contao\System;
 use Contao\ContentModel;
 use Alpdesk\AlpdeskParallax\Model\AlpdeskanimationsModel;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class HooksListener
@@ -45,7 +46,7 @@ class HooksListener
      */
     private function isFrontend(): bool
     {
-        if ($this->requestStack->getCurrentRequest() instanceof \Symfony\Component\HttpFoundation\Request) {
+        if ($this->requestStack->getCurrentRequest() instanceof Request) {
             return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
         }
         return false;
