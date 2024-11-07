@@ -46,10 +46,11 @@ class HooksListener
      */
     private function isFrontend(): bool
     {
-        if ($this->requestStack->getCurrentRequest() instanceof Request) {
-            return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
+        if (!$this->requestStack->getCurrentRequest() instanceof Request) {
+            return false;
         }
-        return false;
+
+        return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
     }
 
     /**
