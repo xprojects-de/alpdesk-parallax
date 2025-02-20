@@ -68,22 +68,13 @@ class HooksListener
 
     /**
      * @param PageModel $objPage
-     * @param LayoutModel $objLayout
-     * @param PageRegular $objPageRegular
      * @return void
      */
-    public function onGetPageLayout(PageModel $objPage, LayoutModel $objLayout, PageRegular $objPageRegular): void
+    public function onGetPageLayout(PageModel $objPage): void
     {
-        $jqueryAdded = false;
-
         $objArticleParallax = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasParallaxBackgroundImage=?'), array($objPage->id, 1, 1));
 
         if ($objArticleParallax !== null) {
-
-            if (!$objLayout->addJQuery) {
-                $GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.js|static';
-                $jqueryAdded = true;
-            }
 
             $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskparallax.js', 'alpdesk_parallax');
             $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskparallax.css', 'alpdesk_parallax');
@@ -93,10 +84,6 @@ class HooksListener
         $objArticleAnimations = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasAnimationeffects=?'), array($objPage->id, 1, 1));
 
         if ($objArticleAnimations !== null) {
-
-            if (!$objLayout->addJQuery && $jqueryAdded === false) {
-                $GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.js|static';
-            }
 
             $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskanimationeffects.js', 'alpdesk_parallax');
             $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskanimationeffects.css', 'alpdesk_parallax');
