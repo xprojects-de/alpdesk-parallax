@@ -174,10 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const speed = getSpeed(element.speed);
 
-            element.node.style.display = 'block';
-            if (element.type === TYPE_CE_ELEMENT) {
-                element.node.style.opacity = 1;
-            }
+            element.node.style.opacity = 1;
 
             if (element.animateCssOptions !== '') {
 
@@ -299,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const animateCssOptions = node.dataset.animationcss;
 
                     if (hide === '1') {
-                        node.style.display = 'none';
+                        node.style.opacity = 0;
                     }
 
                     prepareEffect(node, startposition);

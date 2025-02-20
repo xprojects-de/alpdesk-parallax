@@ -16,7 +16,7 @@
 }
 
 .has-animationeffects .animation-effect-hide {
-    display: none;
+    opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
