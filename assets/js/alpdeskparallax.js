@@ -1,229 +1,134 @@
-import '../css/alpdeskparallax.css'
+document.addEventListener("DOMContentLoaded", function () {
 
-(function (window, document) {
+    if (!('requestAnimationFrame' in window)) {
+        return;
+    }
 
-    function alpdeskParallaxReady(callback) {
-        if (document.addEventListener) {
-            document.addEventListener('DOMContentLoaded', callback);
-        } else if (document.readyState !== 'loading') {
-            callback();
+    function isInParallaxViewport(element) {
+        const elementTop = element.getBoundingClientRect().top + window.scrollY;
+        const elementBottom = elementTop + element.offsetHeight;
+        const viewportTop = window.scrollY;
+        const viewportBottom = viewportTop + window.innerHeight;
+        return elementBottom > viewportTop && elementTop < viewportBottom;
+    }
+
+    function getParallaxScrollOffset(element) {
+        let diff = element.getBoundingClientRect().top - window.innerHeight;
+        return diff < 0 ? 0 : diff;
+    }
+
+    let parallaxElements = [];
+    let visibleElements = [];
+    let processParallaxScheduled;
+    const factor = 0.25;
+
+    function prepareBackgroundvAlign(nodeHeight, srcHeight, vAlign, sizeModus) {
+        let yPos = 0; // top
+        if (sizeModus === 'cover') {
+            return yPos;
+        }
+        if (vAlign === 'center') {
+            yPos = Math.floor((nodeHeight / 2) - (srcHeight / 2));
+        } else if (vAlign === 'bottom') {
+            yPos = Math.floor(nodeHeight - srcHeight);
+        }
+        return yPos;
+    }
+
+    function scrollParallax() {
+        parallaxElements.forEach(element => {
+            const parent = element.node.parentNode;
+            if (parent.classList.contains('parallax') && isInParallaxViewport(parent) && !checkVisibleExists(element.node)) {
+                visibleElements.push(element);
+            }
+        });
+
+        cancelAnimationFrame(processParallaxScheduled);
+        if (visibleElements.length) {
+            processParallaxScheduled = requestAnimationFrame(updateVisibleElements);
         }
     }
 
-    alpdeskParallaxReady(function () {
+    function checkVisibleExists(element) {
+        return visibleElements.some(visibleElement => visibleElement.node === element);
+    }
 
-        if (!('requestAnimationFrame' in window)) {
+    function updateVisibleElements() {
+        visibleElements.forEach(setPosition);
+    }
+
+    function setPosition(element) {
+        if (element.parent.getBoundingClientRect().top > window.innerHeight) {
             return;
         }
 
-        function parallaxViewport(element) {
+        const vAlign = parseInt(element.node.dataset.parallaxValign);
+        const hAlign = element.node.dataset.parallaxHalign;
+        const vParallax = element.node.dataset.vparallax;
 
-            const elementTop = element.offsetTop;
-            const elementBottom = elementTop + element.getBoundingClientRect().height;
-            const viewportTop = window.scrollY;
-            const viewportBottom = viewportTop + window.innerHeight;
+        const scrollOffset = window.scrollY - getParallaxScrollOffset(element.parent);
+        let motion = vAlign + (factor * scrollOffset);
 
-            return elementBottom > viewportTop && elementTop < viewportBottom;
-
+        if (element.vAlign === 'bottom' && element.sizeModus !== 'cover') {
+            motion = vAlign - (factor * scrollOffset);
         }
 
-        function parallaxScrollOffset(element) {
+        element.node.style.backgroundPositionY = motion + 'px';
 
-            let diff = (element.offsetTop - window.innerHeight);
-
-            if (diff < 0) {
-                diff = 0;
-            }
-
-            return diff;
-
+        let motion_h = hAlign;
+        if (vParallax === 'left' && element.hAlign !== 'center') {
+            motion_h = -motion + 'px';
+        } else if (vParallax === 'right' && element.hAlign !== 'center') {
+            motion_h = (window.innerWidth - motion) + 'px';
         }
 
-        let parallaxElements = [];
-        let visibleElements = [];
-        let processParallaxScheduled;
-        const factor = 0.25;
+        element.node.style.backgroundPositionX = motion_h;
+    }
 
-        function prepareBackgroundvAlign(nodeHeight, srcHeight, vAlign, sizeModus) {
+    function initParallax() {
+        parallaxElements = [];
+        visibleElements = [];
 
-            let yPos = 0; // top
-            if (sizeModus === 'cover') {
-                return yPos;
-            }
+        document.querySelectorAll('.has-responsive-background-image').forEach(el => {
+            const node = el.querySelector('div.parallax-bgimage');
+            if (node) {
+                const parallaxActive = node.dataset.isparallax;
+                const sizeModus = node.dataset.sizemodus;
+                const hAlign = node.dataset.halign;
+                const vAlign = node.dataset.valign;
+                const src = node.dataset.src;
+                const srcHeight = node.dataset.srcheight;
 
-            if (vAlign === 'center') {
-                yPos = Math.floor((nodeHeight / 2) - (srcHeight / 2));
-            } else if (vAlign === 'bottom') {
-                yPos = Math.floor(nodeHeight - (srcHeight));
-            }
+                node.style.backgroundImage = `url(${src})`;
+                node.style.backgroundSize = sizeModus;
 
-            return yPos;
-        }
-
-        function scrollParallax() {
-
-            for (let i = 0; i < parallaxElements.length; i++) {
-
-                const parent = parallaxElements[i].node.parentNode;
-                if ($(parent).hasClass('parallax')) {
-
-                    if (parallaxViewport(parent) && !checkVisibleExists(parallaxElements[i].node)) {
-
-                        visibleElements.push({
-                            node: parallaxElements[i].node,
-                            parent: parent,
-                            vAlign: parallaxElements[i].vAlign,
-                            hAlign: parallaxElements[i].hAlign,
-                            sizeModus: parallaxElements[i].sizeModus,
-                            coverH: parallaxElements[i].coverH,
-                            elementH: parallaxElements[i].elementH
-                        });
-
+                if (parallaxActive === '1') {
+                    const elementH = el.offsetHeight;
+                    let coverH = sizeModus === 'cover' ? elementH + (elementH * factor) + (factor * window.innerHeight) : 0;
+                    if (sizeModus === 'cover') {
+                        node.style.height = coverH + 'px';
+                        node.style.top = -(coverH - elementH) + 'px';
+                        node.style.backgroundPositionY = '0%';
                     }
 
+                    node.dataset.parallaxValign = prepareBackgroundvAlign(node.offsetHeight, srcHeight, vAlign, sizeModus).toString();
+                    node.dataset.parallaxHalign = hAlign;
+
+                    parallaxElements.push({node, vAlign, hAlign, sizeModus, coverH, elementH});
+                    scrollParallax();
+                } else {
+                    node.style.backgroundPositionX = hAlign;
+                    node.style.backgroundPositionY = vAlign;
                 }
-
             }
+        });
+    }
 
-            cancelAnimationFrame(processParallaxScheduled);
-            if (visibleElements.length) {
-                processParallaxScheduled = requestAnimationFrame(updateVisibleElements);
-            }
+    initParallax();
 
-        }
+    if (!parallaxElements.length) return;
 
-        function checkVisibleExists(element) {
+    window.addEventListener('scroll', scrollParallax);
+    window.addEventListener('resize', initParallax);
 
-            for (let i = 0; i < visibleElements.length; i++) {
-
-                if (visibleElements[i].node === element) {
-                    return true;
-                }
-
-            }
-
-            return false;
-
-        }
-
-        function updateVisibleElements() {
-
-            for (let i = 0; i < visibleElements.length; i++) {
-                setPosition(visibleElements[i]);
-            }
-
-        }
-
-        function setPosition(element) {
-
-            if (element.parent.getBoundingClientRect().top > $(window).height()) {
-                return;
-            }
-
-            const vAlign = parseInt($(element.node).attr('data-parallax-valign'));
-            const hAlign = $(element.node).attr('data-parallax-halign');
-            const vParallax = $(element.node).attr('data-vparallax');
-
-            const scrollOffset = $(window).scrollTop() - parallaxScrollOffset(element.parent);
-            let motion = (vAlign + (factor * scrollOffset));
-
-            if (element.vAlign === 'bottom' && element.sizeModus !== 'cover') {
-                motion = (vAlign + (-factor * scrollOffset));
-            }
-
-            $(element.node).css({
-                backgroundPositionY: motion + 'px'
-            });
-
-            let motion_h = hAlign;
-            if (vParallax === 'left' && element.hAlign !== 'center') {
-                motion_h = (-motion) + 'px';
-            } else if (vParallax === 'right' && element.hAlign !== 'center') {
-                motion_h = ($(window).width() - motion) + 'px';
-            }
-
-            $(element.node).css({
-                backgroundPositionX: motion_h
-            });
-
-        }
-
-        function initParallax() {
-
-            parallaxElements = [];
-            visibleElements = [];
-
-            $('.has-responsive-background-image').each(function () {
-
-                const el = $(this);
-                const node = el.find('div.parallax-bgimage');
-                if (node !== null) {
-
-                    const parallaxActive = node.data('isparallax');
-                    const sizeModus = node.data('sizemodus');
-                    const hAlign = node.data('halign');
-                    const vAlign = node.data('valign');
-                    const src = node.data('src');
-                    const srcHeight = node.data('srcheight');
-
-                    node.css({
-                        backgroundImage: 'url(' + src + ')',
-                        backgroundSize: sizeModus
-                    });
-
-                    if (parallaxActive === 1) {
-
-                        let coverH = 0;
-                        const elementH = $(this).outerHeight();
-
-                        if (sizeModus === 'cover') {
-
-                            coverH = elementH + (elementH * factor) + (factor * $(window).height());
-                            const coverTop = -(coverH - elementH);
-                            node.height(coverH);
-                            node.css({
-                                top: coverTop,
-                                backgroundPositionY: '0%'
-                            });
-
-                        }
-
-                        node.attr('data-parallax-valign', prepareBackgroundvAlign(node.height(), srcHeight, vAlign, sizeModus));
-                        node.attr('data-parallax-halign', hAlign);
-
-                        parallaxElements.push({
-                            node: node[0],
-                            vAlign: vAlign,
-                            hAlign: hAlign,
-                            sizeModus: sizeModus,
-                            coverH: coverH,
-                            elementH: elementH
-                        });
-
-                        scrollParallax();
-
-                    } else {
-
-                        node.css({
-                            backgroundPositionX: hAlign,
-                            backgroundPositionY: vAlign
-                        });
-
-                    }
-
-                }
-
-            });
-        }
-
-        initParallax();
-
-        if (!parallaxElements.length)
-            return;
-
-        $(window).on('scroll', scrollParallax);
-        $(window).on('resize', initParallax);
-
-    }, false);
-
-})(window, document);
+});

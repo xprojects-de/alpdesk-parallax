@@ -1,11 +1,8 @@
 {
   "entrypoints": {
     "alpdeskparallax": {
-      "css": [
-        "/bundles/alpdeskparallax/alpdeskparallax.515f1b63.css"
-      ],
       "js": [
-        "/bundles/alpdeskparallax/alpdeskparallax.68df3cbd.js"
+        "/bundles/alpdeskparallax/alpdeskparallax.727604da.js"
       ]
     },
     "alpdeskanimationeffects": {
