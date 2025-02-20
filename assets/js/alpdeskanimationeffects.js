@@ -1,9 +1,17 @@
 import '../css/animate.min.css'
 import '../css/alpdeskanimationeffects.css'
 
-$(document).ready(function () {
+(function (window, document) {
 
-    (function () {
+    function alpdeskAnimationsReady(callback) {
+        if (document.addEventListener) {
+            document.addEventListener('DOMContentLoaded', callback);
+        } else if (document.readyState !== 'loading') {
+            callback();
+        }
+    }
+
+    alpdeskAnimationsReady(function () {
 
         if (!('requestAnimationFrame' in window)) {
             return;
@@ -436,5 +444,6 @@ $(document).ready(function () {
         $(window).on('scroll', processAnimation);
         $(window).on('resize', init);
 
-    })();
-});
+    }, false);
+
+})(window, document);

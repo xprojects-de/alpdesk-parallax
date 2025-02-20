@@ -1,8 +1,16 @@
 import '../css/alpdeskparallax.css'
 
-$(document).ready(function () {
+(function (window, document) {
 
-    (function () {
+    function alpdeskParallaxReady(callback) {
+        if (document.addEventListener) {
+            document.addEventListener('DOMContentLoaded', callback);
+        } else if (document.readyState !== 'loading') {
+            callback();
+        }
+    }
+
+    alpdeskParallaxReady(function () {
 
         if (!('requestAnimationFrame' in window)) {
             return;
@@ -215,6 +223,6 @@ $(document).ready(function () {
         $(window).on('scroll', scrollParallax);
         $(window).on('resize', initParallax);
 
-    })();
+    }, false);
 
-});
+})(window, document);
