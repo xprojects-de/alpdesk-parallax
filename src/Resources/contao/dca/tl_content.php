@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Contao\Input;
 use Contao\DataContainer;
 use Contao\Controller;
@@ -33,7 +35,6 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'hasAnimationef
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['hasAnimationeffects'] = 'animation_hide_before_viewport,animation_viewport,animation_speed,animation_animatecssoptions';
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['hasAnimationeffects'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_content']['hasAnimationeffects'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true],
@@ -41,7 +42,6 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['hasAnimationeffects'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['animation_viewport'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_viewport'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_viewport_options'],
@@ -50,7 +50,6 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['animation_viewport'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['animation_hide_before_viewport'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_hide_before_viewport'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr'],
@@ -58,7 +57,6 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['animation_hide_before_viewport'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['animation_speed'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_speed'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_speed_options'],
@@ -67,7 +65,6 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['animation_speed'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['animation_animatecssoptions'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecssoptions'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => AlpdeskParallaxUtils::$animationCssOptions,

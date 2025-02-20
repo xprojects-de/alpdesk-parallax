@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
 use Contao\BackendUser;
@@ -21,7 +23,6 @@ $GLOBALS['TL_DCA']['tl_article']['palettes']['__selector__'][] = 'hasAnimationef
 $GLOBALS['TL_DCA']['tl_article']['subpalettes']['hasAnimationeffects'] = 'alpdeskanimation';
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['hasParallaxBackgroundImage'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['hasParallaxBackgroundImage'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true],
@@ -29,7 +30,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['hasParallaxBackgroundImage'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['singleSRC'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['singleSRC'],
     'exclude' => true,
     'inputType' => 'fileTree',
     'eval' => [
@@ -41,7 +41,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['singleSRC'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['size'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['size'],
     'exclude' => true,
     'inputType' => 'imageSize',
     'reference' => &$GLOBALS['TL_LANG']['MSC'],
@@ -59,7 +58,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['size'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['sizemodus'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['sizemodus'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => ['auto', 'cover'],
@@ -69,7 +67,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['sizemodus'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['hAlign'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['hAlign'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => ['left', 'center', 'right'],
@@ -79,7 +76,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['hAlign'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['vAlign'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['vAlign'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => ['top', 'center', 'bottom'],
@@ -89,7 +85,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['vAlign'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['vParallax'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['vParallax'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => ['left', 'right'],
@@ -99,7 +94,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['vParallax'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['isParallax'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['isParallax'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr w50 m12'],
@@ -107,7 +101,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['isParallax'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['hasAnimationeffects'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['hasAnimationeffects'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true],
@@ -115,7 +108,6 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['hasAnimationeffects'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_article']['fields']['alpdeskanimation'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_article']['alpdeskanimation'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'foreignKey' => 'tl_alpdeskanimations.title',
