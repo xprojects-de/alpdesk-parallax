@@ -31,11 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let o = 0;
         const parentWidth = element.parentElement.offsetWidth;
+        const elementWidth = element.offsetWidth;
 
         if (position === 'right') {
-            o = parentWidth - element.offsetWidth;
+            o = parentWidth - elementWidth;
         } else if (position === 'center') {
-            o = (parentWidth / 2) - (element.offsetWidth / 2);
+            o = (parentWidth / 2) - (elementWidth / 2);
         }
 
         return o;
@@ -46,11 +47,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let o = 0;
         const parentHeight = element.parentElement.offsetHeight;
+        const elementHeight = element.offsetHeight;
 
         if (position === 'bottom') {
-            o = parentHeight - element.offsetHeight;
+            o = parentHeight - elementHeight;
         } else if (position === 'center') {
-            o = (parentHeight / 2) - (element.offsetHeight / 2);
+            o = (parentHeight / 2) - (elementHeight / 2);
         }
 
         return o;
