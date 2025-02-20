@@ -1,3 +1,5 @@
+import '../css/alpdeskparallax.css';
+
 document.addEventListener("DOMContentLoaded", function () {
 
     if (!('requestAnimationFrame' in window)) {

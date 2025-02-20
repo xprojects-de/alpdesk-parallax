@@ -1,449 +1,259 @@
-import '../css/animate.min.css'
-import '../css/alpdeskanimationeffects.css'
+import '../css/animate.min.css';
+import '../css/alpdeskanimationeffects.css';
 
-(function (window, document) {
+document.addEventListener('DOMContentLoaded', function () {
 
-    function alpdeskAnimationsReady(callback) {
-        if (document.addEventListener) {
-            document.addEventListener('DOMContentLoaded', callback);
-        } else if (document.readyState !== 'loading') {
-            callback();
+    if (!('requestAnimationFrame' in window)) {
+        return;
+    }
+
+    function isInAnimationViewport(element, offsetPercent = 0) {
+        const rect = element.getBoundingClientRect();
+        let elementTop = rect.top + window.scrollY;
+        const elementHeight = rect.height;
+        if (offsetPercent !== 0) {
+            const hPercent = (window.innerHeight / 100) * offsetPercent;
+            elementTop = elementTop + hPercent;
+        }
+        const elementBottom = elementTop + elementHeight;
+        const viewportTop = window.scrollY;
+        const viewportBottom = viewportTop + window.innerHeight;
+        return elementBottom > viewportTop && elementTop < viewportBottom;
+    }
+
+    function getAnimationXOffset(element, position = 'left') {
+        let o = 0;
+        const parentWidth = element.parentElement.offsetWidth;
+        if (position === 'right') {
+            o = parentWidth - element.offsetWidth;
+        } else if (position === 'center') {
+            o = (parentWidth / 2) - (element.offsetWidth / 2);
+        }
+        return o;
+    }
+
+    function getAnimationYOffset(element, position = 'top') {
+        let o = 0;
+        const parentHeight = element.parentElement.offsetHeight;
+        if (position === 'bottom') {
+            o = parentHeight - element.offsetHeight;
+        } else if (position === 'center') {
+            o = (parentHeight / 2) - (element.offsetHeight / 2);
+        }
+        return o;
+    }
+
+    const animationElements = [];
+    const visibleAnimationElements = [];
+    let processAnimationsScheduled = null;
+
+    const EFFECT_SPEED_SLOW_VALUE = 4000;
+    const EFFECT_SPEED_MIDDLE_VALUE = 2500;
+    const EFFECT_SPEED_FAST_VALUE = 1000;
+
+    function getSpeed(speed) {
+        switch (speed) {
+            case 'slow':
+                return EFFECT_SPEED_SLOW_VALUE;
+            case 'middle':
+                return EFFECT_SPEED_MIDDLE_VALUE;
+            case 'fast':
+                return EFFECT_SPEED_FAST_VALUE;
+            default:
+                return EFFECT_SPEED_MIDDLE_VALUE;
         }
     }
 
-    alpdeskAnimationsReady(function () {
-
-        if (!('requestAnimationFrame' in window)) {
-            return;
-        }
-
-        $.fn.isInAnimationViewport = function (offsetPercent = 0) {
-
-            let elementTop = $(this).offset().top;
-
-            if (offsetPercent !== 0 && elementTop !== 0) {
-                const hPercent = ($(window).height() / 100) * offsetPercent;
-                elementTop = elementTop + hPercent;
-            }
-
-            const elementBottom = elementTop + $(this).outerHeight();
-            const viewportTop = $(window).scrollTop();
-            const viewportBottom = viewportTop + $(window).height();
-
-            return elementBottom > viewportTop && elementTop < viewportBottom;
-
-        };
-
-        $.fn.getAnimationXOffset = function (position = 'left') {
-
-            let o = 0;
-
-            if (position === 'right') {
-                o = ($(this).parent().width() - $(this).outerWidth());
-            } else if (position === 'center') {
-                o = (($(this).parent().width() / 2) - ($(this).outerWidth() / 2));
-            }
-
-            return o;
-
-        };
-
-        $.fn.getAnimationYOffset = function (position = 'top') {
-
-            let o = 0;
-
-            if (position === 'bottom') {
-                o = ($(this).parent().height() - $(this).outerHeight());
-            } else if (position === 'center') {
-                o = (($(this).parent().height() / 2) - ($(this).outerHeight() / 2));
-            }
-
-            return o;
-
-        };
-
-        let animationElements = [];
-        let visibleAnimationElements = [];
-        let processAnimationsScheduled;
-
-        const POSITION_S1 = 's1';
-        const POSITION_S2 = 's2';
-        const POSITION_S3 = 's3';
-        const POSITION_S4 = 's4';
-        const POSITION_S5 = 's5';
-        const POSITION_S6 = 's6';
-        const POSITION_S7 = 's7';
-        const POSITION_S8 = 's8';
-        const POSITION_S9 = 's9';
-
-        const EFFECT_E1 = 'e1';
-        const EFFECT_E2 = 'e2';
-        const EFFECT_E3 = 'e3';
-        const EFFECT_E4 = 'e4';
-        const EFFECT_E5 = 'e5';
-        const EFFECT_E6 = 'e6';
-        const EFFECT_E7 = 'e7';
-        const EFFECT_E8 = 'e8';
-        const EFFECT_E9 = 'e9';
-
-        const EFFECT_SPEED_SLOW = 'slow';
-        const EFFECT_SPEED_SLOW_VALUE = 4000;
-        const EFFECT_SPEED_MIDDLE = 'middle';
-        const EFFECT_SPEED_MIDDLE_VALUE = 2500;
-        const EFFECT_SPEED_FAST = 'fast';
-        const EFFECT_SPEED_FAST_VALUE = 1000;
-
-        const TYPE_ARTICLE = 1;
-        const TYPE_CEELEMENT = 2;
-
-        function getSpeed(speed) {
-
-            let s = EFFECT_SPEED_MIDDLE_VALUE;
-            switch (speed) {
-                case EFFECT_SPEED_SLOW: {
-                    s = EFFECT_SPEED_SLOW_VALUE;
-                    break;
-                }
-                case EFFECT_SPEED_MIDDLE: {
-                    s = EFFECT_SPEED_MIDDLE_VALUE;
-                    break;
-                }
-                case EFFECT_SPEED_FAST: {
-                    s = EFFECT_SPEED_FAST_VALUE;
-                    break;
-                }
-                default:
-                    break;
-            }
-
-            return s;
-
-        }
-
-        function processAnimation() {
-
-            for (let i = 0; i < animationElements.length; i++) {
-
-                const parent = animationElements[i].node.parentNode;
-
-                if ($(parent).isInAnimationViewport(animationElements[i].viewport) && !checkVisibleExists(animationElements[i].node)) {
-
-                    visibleAnimationElements.push({
-                        node: animationElements[i].node,
-                        effect: animationElements[i].effect,
-                        startposition: animationElements[i].startposition,
-                        speed: animationElements[i].speed,
-                        viewport: animationElements[i].viewport,
-                        animateCssOptions: animationElements[i].animateCssOptions,
-                        type: animationElements[i].type,
-                        triggered: false
-                    });
-
-                }
-
-            }
-
-            cancelAnimationFrame(processAnimationsScheduled);
-            if (animationElements.length) {
-                processAnimationsScheduled = requestAnimationFrame(updateVisibleElements);
-            }
-
-        }
-
-        function checkVisibleExists(element) {
-
-            for (let i = 0; i < visibleAnimationElements.length; i++) {
-
-                if (visibleAnimationElements[i].node === element) {
-                    return true;
-                }
-
-            }
-
-            return false;
-
-        }
-
-        function updateVisibleElements() {
-
-            for (let i = 0; i < visibleAnimationElements.length; i++) {
-                runEffect(visibleAnimationElements[i]);
-            }
-
-        }
-
-        function runEffect(element) {
-
-            if (element.triggered === false) {
-
-                const speed = getSpeed(element.speed);
-
-                $(element.node).show();
-                if (element.type === TYPE_CEELEMENT) {
-                    $(element.node).css({
-                        opacity: 1
-                    });
-                }
-
-                if (element.animateCssOptions !== '') {
-                    $(element.node).css({
-                        animationDuration: speed + 'ms'
-                    });
-                    $(element.node).addClass('animate__animated');
-                    $(element.node).addClass('animate__' + element.animateCssOptions);
-                }
-
-                switch (element.effect) {
-                    case EFFECT_E1: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('top') + 'px',
-                            left: $(element.node).getAnimationXOffset('left') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    case EFFECT_E2: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('top') + 'px',
-                            left: $(element.node).getAnimationXOffset('center') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    case EFFECT_E3: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('top') + 'px',
-                            left: $(element.node).getAnimationXOffset('right') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    case EFFECT_E4: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('bottom') + 'px',
-                            left: $(element.node).getAnimationXOffset('left') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    case EFFECT_E5: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('bottom') + 'px',
-                            left: $(element.node).getAnimationXOffset('center') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    case EFFECT_E6: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('bottom') + 'px',
-                            left: $(element.node).getAnimationXOffset('right') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    case EFFECT_E7: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('center') + 'px',
-                            left: $(element.node).getAnimationXOffset('left') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    case EFFECT_E8: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('center') + 'px',
-                            left: $(element.node).getAnimationXOffset('center') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    case EFFECT_E9: {
-                        $(element.node).stop().animate({
-                            top: $(element.node).getAnimationYOffset('center') + 'px',
-                            left: $(element.node).getAnimationXOffset('right') + 'px'
-                        }, speed);
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                element.triggered = true;
-            }
-
-        }
-
-        function prepareEffect(node, startposition) {
-
-            switch (startposition) {
-                case POSITION_S1: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('top') + 'px',
-                        left: $(node).getAnimationXOffset('left') + 'px'
-                    });
-                    break;
-                }
-                case POSITION_S2: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('top') + 'px',
-                        left: $(node).getAnimationXOffset('center') + 'px'
-                    });
-                    break;
-                }
-                case POSITION_S3: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('top') + 'px',
-                        left: $(node).getAnimationXOffset('right') + 'px'
-                    });
-                    break;
-                }
-                case POSITION_S4: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('bottom') + 'px',
-                        left: $(node).getAnimationXOffset('left') + 'px'
-                    });
-                    break;
-                }
-                case POSITION_S5: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('bottom') + 'px',
-                        left: $(node).getAnimationXOffset('center') + 'px'
-                    });
-                    break;
-                }
-                case POSITION_S6: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('bottom') + 'px',
-                        left: $(node).getAnimationXOffset('right') + 'px'
-                    });
-                    break;
-                }
-                case POSITION_S7: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('center') + 'px',
-                        left: $(node).getAnimationXOffset('left') + 'px'
-                    });
-                    break;
-                }
-                case POSITION_S8: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('center') + 'px',
-                        left: $(node).getAnimationXOffset('center') + 'px'
-                    });
-                    break;
-                }
-                case POSITION_S9: {
-                    node.css({
-                        top: $(node).getAnimationYOffset('center') + 'px',
-                        left: $(node).getAnimationXOffset('right') + 'px'
-                    });
-                    break;
-                }
-                default:
-                    break;
-            }
-
-        }
-
-        function init() {
-
-            visibleAnimationElements = [];
-            animationElements = [];
-
-            $('.has-animationeffects').each(function () {
-
-                const el = $(this);
-
-                el.find('div.animation-effect').each(function () {
-
-                    const node = $(this);
-
-                    if (node !== null) {
-
-                        const effect = node.data('effect');
-                        const startposition = node.data('startposition');
-                        const speed = node.data('speed');
-                        const viewport = node.data('viewport');
-                        const hide = node.data('hide');
-                        const ignoremotionreduce = node.data('ignoremotionreduce');
-                        const animateCssOptions = node.data('animationcss');
-
-                        if (hide === 1) {
-                            $(node).hide();
-                        }
-
-                        prepareEffect(node, startposition);
-
-                        let push = true;
-
-                        if (ignoremotionreduce !== 1) {
-
-                            const mediaQueryMotionReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-                            if (!mediaQueryMotionReduce || mediaQueryMotionReduce.matches === true) {
-                                push = false;
-                                $(node).hide();
-                            }
-
-                        }
-
-                        if (push === true) {
-
-                            animationElements.push({
-                                node: node[0],
-                                effect: effect,
-                                startposition: startposition,
-                                speed: speed,
-                                viewport: viewport,
-                                animateCssOptions: animateCssOptions,
-                                type: TYPE_ARTICLE
-                            });
-
-                        }
-
-                    }
-
+    function processAnimation() {
+        for (let i = 0; i < animationElements.length; i++) {
+            const parent = animationElements[i].node.parentElement;
+            if (isInAnimationViewport(parent, animationElements[i].viewport) && !checkVisibleExists(animationElements[i].node)) {
+                visibleAnimationElements.push({
+                    node: animationElements[i].node,
+                    effect: animationElements[i].effect,
+                    startposition: animationElements[i].startposition,
+                    speed: animationElements[i].speed,
+                    viewport: animationElements[i].viewport,
+                    animateCssOptions: animationElements[i].animateCssOptions,
+                    type: animationElements[i].type,
+                    triggered: false
                 });
+            }
+        }
 
-            });
+        cancelAnimationFrame(processAnimationsScheduled);
+        if (animationElements.length) {
+            processAnimationsScheduled = requestAnimationFrame(updateVisibleElements);
+        }
+    }
 
-            $('.animation-effect-ce').each(function () {
+    function checkVisibleExists(element) {
+        for (let i = 0; i < visibleAnimationElements.length; i++) {
+            if (visibleAnimationElements[i].node === element) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-                const node = $(this);
+    function updateVisibleElements() {
+        for (let i = 0; i < visibleAnimationElements.length; i++) {
+            runEffect(visibleAnimationElements[i]);
+        }
+    }
+
+    function runEffect(element) {
+        if (element.triggered === false) {
+
+            const speed = getSpeed(element.speed);
+
+            element.node.style.display = 'block';
+            if (element.type === 2) {
+                element.node.style.opacity = 1;
+            }
+
+            if (element.animateCssOptions !== '') {
+                element.node.style.animationDuration = speed + 'ms';
+                element.node.classList.add('animate__animated');
+                element.node.classList.add('animate__' + element.animateCssOptions);
+            }
+
+            element.node.style.transition = `top ${speed}ms, left ${speed}ms`;
+
+            element.node.style.top = getAnimationYOffset(element.node, 'top') + 'px';
+            element.node.style.left = getAnimationXOffset(element.node, 'left') + 'px';
+
+            element.triggered = true;
+        }
+    }
+
+    function prepareEffect(node, startposition) {
+        switch (startposition) {
+            case 's1':
+                node.style.top = getAnimationYOffset(node, 'top') + 'px';
+                node.style.left = getAnimationXOffset(node, 'left') + 'px';
+                break;
+            case 's2':
+                node.style.top = getAnimationYOffset(node, 'top') + 'px';
+                node.style.left = getAnimationXOffset(node, 'center') + 'px';
+                break;
+            case 's3':
+                node.style.top = getAnimationYOffset(node, 'top') + 'px';
+                node.style.left = getAnimationXOffset(node, 'right') + 'px';
+                break;
+            case 's4':
+                node.style.top = getAnimationYOffset(node, 'bottom') + 'px';
+                node.style.left = getAnimationXOffset(node, 'left') + 'px';
+                break;
+            case 's5':
+                node.style.top = getAnimationYOffset(node, 'bottom') + 'px';
+                node.style.left = getAnimationXOffset(node, 'center') + 'px';
+                break;
+            case 's6':
+                node.style.top = getAnimationYOffset(node, 'bottom') + 'px';
+                node.style.left = getAnimationXOffset(node, 'right') + 'px';
+                break;
+            case 's7':
+                node.style.top = getAnimationYOffset(node, 'center') + 'px';
+                node.style.left = getAnimationXOffset(node, 'left') + 'px';
+                break;
+            case 's8':
+                node.style.top = getAnimationYOffset(node, 'center') + 'px';
+                node.style.left = getAnimationXOffset(node, 'center') + 'px';
+                break;
+            case 's9':
+                node.style.top = getAnimationYOffset(node, 'center') + 'px';
+                node.style.left = getAnimationXOffset(node, 'right') + 'px';
+                break;
+            default:
+                break;
+        }
+    }
+
+    function init() {
+
+        visibleAnimationElements.length = 0;
+        animationElements.length = 0;
+
+        document.querySelectorAll('.has-animationeffects').forEach(function (el) {
+            el.querySelectorAll('div.animation-effect').forEach(function (node) {
 
                 if (node !== null) {
+                    const effect = node.dataset.effect;
+                    const startposition = node.dataset.startposition;
+                    const speed = node.dataset.speed;
+                    const viewport = node.dataset.viewport;
+                    const hide = node.dataset.hide;
+                    const ignoremotionreduce = node.dataset.ignoremotionreduce;
+                    const animateCssOptions = node.dataset.animationcss;
 
-                    const speed = node.data('speed');
-                    const viewport = node.data('viewport');
-                    const hide = node.data('hide');
-                    const animateCssOptions = node.data('animationcss');
-
-                    if (hide === 1) {
-                        $(node).css({
-                            opacity: 0
-                        });
+                    if (hide === '1') {
+                        node.style.display = 'none';
                     }
 
-                    animationElements.push({
-                        node: node[0],
-                        effect: '',
-                        startposition: '',
-                        speed: speed,
-                        viewport: viewport,
-                        animateCssOptions: animateCssOptions,
-                        type: TYPE_CEELEMENT
-                    });
+                    prepareEffect(node, startposition);
 
+                    let push = true;
+
+                    if (ignoremotionreduce !== '1') {
+                        const mediaQueryMotionReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+                        if (!mediaQueryMotionReduce || mediaQueryMotionReduce.matches === true) {
+                            push = false;
+                            node.style.display = 'none';
+                        }
+                    }
+
+                    if (push === true) {
+                        animationElements.push({
+                            node: node,
+                            effect: effect,
+                            startposition: startposition,
+                            speed: speed,
+                            viewport: viewport,
+                            animateCssOptions: animateCssOptions,
+                            type: 1 // TYPE_ARTICLE
+                        });
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.animation-effect-ce').forEach(function (node) {
+
+            if (node !== null) {
+                const speed = node.dataset.speed;
+                const viewport = node.dataset.viewport;
+                const hide = node.dataset.hide;
+                const animateCssOptions = node.dataset.animationcss;
+
+                if (hide === '1') {
+                    node.style.opacity = 0;
                 }
 
-            });
-
-            if (animationElements.length > 0) {
-                processAnimation();
+                animationElements.push({
+                    node: node,
+                    effect: '',
+                    startposition: '',
+                    speed: speed,
+                    viewport: viewport,
+                    animateCssOptions: animateCssOptions,
+                    type: 2 // TYPE_CEELEMENT
+                });
             }
+        });
 
+        if (animationElements.length > 0) {
+            processAnimation();
         }
+    }
 
-        init();
+    init();
 
-        if (!animationElements.length) {
-            return;
-        }
+    if (animationElements.length) {
+        window.addEventListener('scroll', processAnimation);
+        window.addEventListener('resize', init);
+    }
 
-        $(window).on('scroll', processAnimation);
-        $(window).on('resize', init);
+});
 
-    }, false);
 
-})(window, document);
