@@ -150,25 +150,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const deltaTop = topValue - initialTop;
         const deltaLeft = leftValue - initialLeft;
 
-        let elementAnimationsScheduled = null;
-
         function animate() {
-
             const elapsed = performance.now() - startTime;
             const progress = Math.min(elapsed / speed, 1);
 
             node.style.top = (initialTop + deltaTop * progress) + 'px';
             node.style.left = (initialLeft + deltaLeft * progress) + 'px';
 
-            cancelAnimationFrame(elementAnimationsScheduled);
-
             if (progress < 1) {
-                elementAnimationsScheduled = requestAnimationFrame(animate);
+                requestAnimationFrame(animate);
             }
         }
 
-        animate();
-
+        requestAnimationFrame(animate);
     }
 
 
