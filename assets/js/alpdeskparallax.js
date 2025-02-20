@@ -16,27 +16,28 @@ import '../css/alpdeskparallax.css'
             return;
         }
 
-        $.fn.isInParallaxViewport = function () {
+        function parallaxViewport(element) {
 
-            const elementTop = $(this).offset().top;
-            const elementBottom = elementTop + $(this).outerHeight();
-            const viewportTop = $(window).scrollTop();
-            const viewportBottom = viewportTop + $(window).height();
+            const elementTop = element.offsetTop;
+            const elementBottom = elementTop + element.getBoundingClientRect().height;
+            const viewportTop = window.scrollY;
+            const viewportBottom = viewportTop + window.innerHeight;
 
             return elementBottom > viewportTop && elementTop < viewportBottom;
 
-        };
+        }
 
-        $.fn.getParallaxScrollOffset = function () {
+        function parallaxScrollOffset(element) {
 
-            let diff = ($(this).offset().top - $(window).height());
+            let diff = (element.offsetTop - window.innerHeight);
+
             if (diff < 0) {
                 diff = 0;
             }
 
             return diff;
 
-        };
+        }
 
         let parallaxElements = [];
         let visibleElements = [];
@@ -66,7 +67,7 @@ import '../css/alpdeskparallax.css'
                 const parent = parallaxElements[i].node.parentNode;
                 if ($(parent).hasClass('parallax')) {
 
-                    if ($(parent).isInParallaxViewport() && !checkVisibleExists(parallaxElements[i].node)) {
+                    if (parallaxViewport(parent) && !checkVisibleExists(parallaxElements[i].node)) {
 
                         visibleElements.push({
                             node: parallaxElements[i].node,
@@ -123,7 +124,7 @@ import '../css/alpdeskparallax.css'
             const hAlign = $(element.node).attr('data-parallax-halign');
             const vParallax = $(element.node).attr('data-vparallax');
 
-            const scrollOffset = $(window).scrollTop() - $(element.parent).getParallaxScrollOffset();
+            const scrollOffset = $(window).scrollTop() - parallaxScrollOffset(element.parent);
             let motion = (vAlign + (factor * scrollOffset));
 
             if (element.vAlign === 'bottom' && element.sizeModus !== 'cover') {
