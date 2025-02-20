@@ -8,56 +8,96 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function isInAnimationViewport(element, offsetPercent = 0) {
+
         const rect = element.getBoundingClientRect();
         let elementTop = rect.top + window.scrollY;
-        const elementHeight = rect.height;
-        if (offsetPercent !== 0) {
+
+        if (offsetPercent !== 0 && elementTop !== 0) {
+
             const hPercent = (window.innerHeight / 100) * offsetPercent;
             elementTop = elementTop + hPercent;
+
         }
-        const elementBottom = elementTop + elementHeight;
+
+        const elementBottom = elementTop + rect.height;
         const viewportTop = window.scrollY;
         const viewportBottom = viewportTop + window.innerHeight;
+
         return elementBottom > viewportTop && elementTop < viewportBottom;
+
     }
 
     function getAnimationXOffset(element, position = 'left') {
+
         let o = 0;
         const parentWidth = element.parentElement.offsetWidth;
+
         if (position === 'right') {
             o = parentWidth - element.offsetWidth;
         } else if (position === 'center') {
             o = (parentWidth / 2) - (element.offsetWidth / 2);
         }
+
         return o;
+
     }
 
     function getAnimationYOffset(element, position = 'top') {
+
         let o = 0;
         const parentHeight = element.parentElement.offsetHeight;
+
         if (position === 'bottom') {
             o = parentHeight - element.offsetHeight;
         } else if (position === 'center') {
             o = (parentHeight / 2) - (element.offsetHeight / 2);
         }
+
         return o;
+
     }
 
     const animationElements = [];
     const visibleAnimationElements = [];
     let processAnimationsScheduled = null;
 
+    const POSITION_S1 = 's1';
+    const POSITION_S2 = 's2';
+    const POSITION_S3 = 's3';
+    const POSITION_S4 = 's4';
+    const POSITION_S5 = 's5';
+    const POSITION_S6 = 's6';
+    const POSITION_S7 = 's7';
+    const POSITION_S8 = 's8';
+    const POSITION_S9 = 's9';
+
+    const EFFECT_E1 = 'e1';
+    const EFFECT_E2 = 'e2';
+    const EFFECT_E3 = 'e3';
+    const EFFECT_E4 = 'e4';
+    const EFFECT_E5 = 'e5';
+    const EFFECT_E6 = 'e6';
+    const EFFECT_E7 = 'e7';
+    const EFFECT_E8 = 'e8';
+    const EFFECT_E9 = 'e9';
+
+    const EFFECT_SPEED_SLOW = 'slow';
     const EFFECT_SPEED_SLOW_VALUE = 4000;
+    const EFFECT_SPEED_MIDDLE = 'middle';
     const EFFECT_SPEED_MIDDLE_VALUE = 2500;
+    const EFFECT_SPEED_FAST = 'fast';
     const EFFECT_SPEED_FAST_VALUE = 1000;
+
+    const TYPE_ARTICLE = 1;
+    const TYPE_CE_ELEMENT = 2;
 
     function getSpeed(speed) {
         switch (speed) {
-            case 'slow':
+            case EFFECT_SPEED_SLOW:
                 return EFFECT_SPEED_SLOW_VALUE;
-            case 'middle':
+            case EFFECT_SPEED_MIDDLE:
                 return EFFECT_SPEED_MIDDLE_VALUE;
-            case 'fast':
+            case EFFECT_SPEED_FAST:
                 return EFFECT_SPEED_FAST_VALUE;
             default:
                 return EFFECT_SPEED_MIDDLE_VALUE;
@@ -65,109 +105,182 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function processAnimation() {
-        for (let i = 0; i < animationElements.length; i++) {
-            const parent = animationElements[i].node.parentElement;
-            if (isInAnimationViewport(parent, animationElements[i].viewport) && !checkVisibleExists(animationElements[i].node)) {
+
+        animationElements.forEach(element => {
+
+            const parent = element.node.parentNode;
+            if (isInAnimationViewport(parent, element.viewport) && !checkVisibleExists(element.node)) {
+
                 visibleAnimationElements.push({
-                    node: animationElements[i].node,
-                    effect: animationElements[i].effect,
-                    startposition: animationElements[i].startposition,
-                    speed: animationElements[i].speed,
-                    viewport: animationElements[i].viewport,
-                    animateCssOptions: animationElements[i].animateCssOptions,
-                    type: animationElements[i].type,
+                    node: element.node,
+                    effect: element.effect,
+                    startposition: element.startposition,
+                    speed: element.speed,
+                    viewport: element.viewport,
+                    animateCssOptions: element.animateCssOptions,
+                    type: element.type,
                     triggered: false
                 });
+
             }
-        }
+
+        });
 
         cancelAnimationFrame(processAnimationsScheduled);
+
         if (animationElements.length) {
             processAnimationsScheduled = requestAnimationFrame(updateVisibleElements);
         }
+
     }
 
     function checkVisibleExists(element) {
-        for (let i = 0; i < visibleAnimationElements.length; i++) {
-            if (visibleAnimationElements[i].node === element) {
-                return true;
-            }
-        }
-        return false;
+        return visibleAnimationElements.some(visibleElement => visibleElement.node === element);
     }
 
     function updateVisibleElements() {
-        for (let i = 0; i < visibleAnimationElements.length; i++) {
-            runEffect(visibleAnimationElements[i]);
-        }
+        visibleAnimationElements.forEach(runEffect);
     }
 
+    function animateElement(node, topValue, leftValue, speed) {
+
+        const startTime = performance.now();
+        const initialTop = parseInt(window.getComputedStyle(node).top, 10);
+        const initialLeft = parseInt(window.getComputedStyle(node).left, 10);
+        const deltaTop = topValue - initialTop;
+        const deltaLeft = leftValue - initialLeft;
+
+        let elementAnimationsScheduled = null;
+
+        function animate() {
+
+            const elapsed = performance.now() - startTime;
+            const progress = Math.min(elapsed / speed, 1);
+
+            node.style.top = (initialTop + deltaTop * progress) + 'px';
+            node.style.left = (initialLeft + deltaLeft * progress) + 'px';
+
+            cancelAnimationFrame(elementAnimationsScheduled);
+
+            if (progress < 1) {
+                elementAnimationsScheduled = requestAnimationFrame(animate);
+            }
+        }
+
+        animate();
+
+    }
+
+
     function runEffect(element) {
+
         if (element.triggered === false) {
 
             const speed = getSpeed(element.speed);
 
             element.node.style.display = 'block';
-            if (element.type === 2) {
+            if (element.type === TYPE_CE_ELEMENT) {
                 element.node.style.opacity = 1;
             }
 
             if (element.animateCssOptions !== '') {
+
                 element.node.style.animationDuration = speed + 'ms';
                 element.node.classList.add('animate__animated');
                 element.node.classList.add('animate__' + element.animateCssOptions);
+
             }
 
-            element.node.style.transition = `top ${speed}ms, left ${speed}ms`;
-
-            element.node.style.top = getAnimationYOffset(element.node, 'top') + 'px';
-            element.node.style.left = getAnimationXOffset(element.node, 'left') + 'px';
+            switch (element.effect) {
+                case EFFECT_E1: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'top'), getAnimationXOffset(element.node, 'left'), speed);
+                    break;
+                }
+                case EFFECT_E2: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'top'), getAnimationXOffset(element.node, 'center'), speed);
+                    break;
+                }
+                case EFFECT_E3: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'top'), getAnimationXOffset(element.node, 'right'), speed);
+                    break;
+                }
+                case EFFECT_E4: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'bottom'), getAnimationXOffset(element.node, 'left'), speed);
+                    break;
+                }
+                case EFFECT_E5: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'bottom'), getAnimationXOffset(element.node, 'center'), speed);
+                    break;
+                }
+                case EFFECT_E6: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'bottom'), getAnimationXOffset(element.node, 'right'), speed);
+                    break;
+                }
+                case EFFECT_E7: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'center'), getAnimationXOffset(element.node, 'left'), speed);
+                    break;
+                }
+                case EFFECT_E8: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'center'), getAnimationXOffset(element.node, 'center'), speed);
+                    break;
+                }
+                case EFFECT_E9: {
+                    animateElement(element.node, getAnimationYOffset(element.node, 'center'), getAnimationXOffset(element.node, 'right'), speed);
+                    break;
+                }
+                default:
+                    break;
+            }
 
             element.triggered = true;
+
         }
+
     }
 
     function prepareEffect(node, startposition) {
+
         switch (startposition) {
-            case 's1':
+            case POSITION_S1:
                 node.style.top = getAnimationYOffset(node, 'top') + 'px';
                 node.style.left = getAnimationXOffset(node, 'left') + 'px';
                 break;
-            case 's2':
+            case POSITION_S2:
                 node.style.top = getAnimationYOffset(node, 'top') + 'px';
                 node.style.left = getAnimationXOffset(node, 'center') + 'px';
                 break;
-            case 's3':
+            case POSITION_S3:
                 node.style.top = getAnimationYOffset(node, 'top') + 'px';
                 node.style.left = getAnimationXOffset(node, 'right') + 'px';
                 break;
-            case 's4':
+            case POSITION_S4:
                 node.style.top = getAnimationYOffset(node, 'bottom') + 'px';
                 node.style.left = getAnimationXOffset(node, 'left') + 'px';
                 break;
-            case 's5':
+            case POSITION_S5:
                 node.style.top = getAnimationYOffset(node, 'bottom') + 'px';
                 node.style.left = getAnimationXOffset(node, 'center') + 'px';
                 break;
-            case 's6':
+            case POSITION_S6:
                 node.style.top = getAnimationYOffset(node, 'bottom') + 'px';
                 node.style.left = getAnimationXOffset(node, 'right') + 'px';
                 break;
-            case 's7':
+            case POSITION_S7:
                 node.style.top = getAnimationYOffset(node, 'center') + 'px';
                 node.style.left = getAnimationXOffset(node, 'left') + 'px';
                 break;
-            case 's8':
+            case POSITION_S8:
                 node.style.top = getAnimationYOffset(node, 'center') + 'px';
                 node.style.left = getAnimationXOffset(node, 'center') + 'px';
                 break;
-            case 's9':
+            case POSITION_S9:
                 node.style.top = getAnimationYOffset(node, 'center') + 'px';
                 node.style.left = getAnimationXOffset(node, 'right') + 'px';
                 break;
             default:
                 break;
         }
+
     }
 
     function init() {
@@ -176,15 +289,17 @@ document.addEventListener('DOMContentLoaded', function () {
         animationElements.length = 0;
 
         document.querySelectorAll('.has-animationeffects').forEach(function (el) {
+
             el.querySelectorAll('div.animation-effect').forEach(function (node) {
 
-                if (node !== null) {
+                if (node) {
+
                     const effect = node.dataset.effect;
                     const startposition = node.dataset.startposition;
                     const speed = node.dataset.speed;
                     const viewport = node.dataset.viewport;
                     const hide = node.dataset.hide;
-                    const ignoremotionreduce = node.dataset.ignoremotionreduce;
+                    const ignoreMotionReduce = node.dataset.ignoremotionreduce;
                     const animateCssOptions = node.dataset.animationcss;
 
                     if (hide === '1') {
@@ -195,15 +310,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     let push = true;
 
-                    if (ignoremotionreduce !== '1') {
+                    if (ignoreMotionReduce !== '1') {
+
                         const mediaQueryMotionReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
                         if (!mediaQueryMotionReduce || mediaQueryMotionReduce.matches === true) {
                             push = false;
                             node.style.display = 'none';
                         }
+
                     }
 
                     if (push === true) {
+
                         animationElements.push({
                             node: node,
                             effect: effect,
@@ -211,16 +329,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             speed: speed,
                             viewport: viewport,
                             animateCssOptions: animateCssOptions,
-                            type: 1 // TYPE_ARTICLE
+                            type: TYPE_ARTICLE
                         });
+
                     }
+
                 }
+
             });
+
         });
 
         document.querySelectorAll('.animation-effect-ce').forEach(function (node) {
 
-            if (node !== null) {
+            if (node) {
+
                 const speed = node.dataset.speed;
                 const viewport = node.dataset.viewport;
                 const hide = node.dataset.hide;
@@ -237,8 +360,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     speed: speed,
                     viewport: viewport,
                     animateCssOptions: animateCssOptions,
-                    type: 2 // TYPE_CEELEMENT
+                    type: TYPE_CE_ELEMENT
                 });
+
             }
         });
 
@@ -249,9 +373,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     init();
 
-    if (animationElements.length) {
+    if (animationElements.length > 0) {
+
         window.addEventListener('scroll', processAnimation);
         window.addEventListener('resize', init);
+
     }
 
 });

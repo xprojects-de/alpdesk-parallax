@@ -167,10 +167,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     initParallax();
 
-    if (!parallaxElements.length) return;
+    if (parallaxElements.length > 0) {
 
-    window.addEventListener('scroll', scrollParallax);
-    window.addEventListener('resize', initParallax);
+        window.addEventListener('scroll', scrollParallax);
+        window.addEventListener('resize', initParallax);
+
+    }
 
 });
 
