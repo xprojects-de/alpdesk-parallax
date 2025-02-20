@@ -7,9 +7,7 @@ namespace Alpdesk\AlpdeskParallax\Listener;
 use Contao\ArticleModel;
 use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\LayoutModel;
 use Contao\PageModel;
-use Contao\PageRegular;
 use Contao\FrontendTemplate;
 use Contao\FilesModel;
 use Contao\Template;
@@ -32,13 +30,6 @@ class HooksListener
     private Packages $packages;
     private ImageFactoryInterface $imageFactory;
 
-    /**
-     * @param RequestStack $requestStack
-     * @param ScopeMatcher $scopeMatcher
-     * @param string $rootDir
-     * @param Packages $packages
-     * @param ImageFactoryInterface $imageFactory
-     */
     public function __construct(
         RequestStack          $requestStack,
         ScopeMatcher          $scopeMatcher,
@@ -54,9 +45,6 @@ class HooksListener
         $this->imageFactory = $imageFactory;
     }
 
-    /**
-     * @return bool
-     */
     private function isFrontend(): bool
     {
         if (!$this->requestStack->getCurrentRequest() instanceof Request) {
@@ -66,10 +54,6 @@ class HooksListener
         return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
     }
 
-    /**
-     * @param PageModel $objPage
-     * @return void
-     */
     public function onGetPageLayout(PageModel $objPage): void
     {
         $objArticleParallax = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasParallaxBackgroundImage=?'), array($objPage->id, 1, 1));
@@ -92,11 +76,6 @@ class HooksListener
 
     }
 
-    /**
-     * @param string $path
-     * @param string $size
-     * @return string|null
-     */
     private function getImage(string $path, string $size = ''): ?string
     {
         try {
@@ -114,10 +93,6 @@ class HooksListener
 
     }
 
-    /**
-     * @param int $animationItemId
-     * @return FrontendTemplate|null
-     */
     private function appendAnimationEffect(int $animationItemId): ?FrontendTemplate
     {
         if ($animationItemId <= 0) {
@@ -172,12 +147,6 @@ class HooksListener
 
     }
 
-    /**
-     * @param FrontendTemplate $objTemplate
-     * @param array $arrData
-     * @param Module $module
-     * @throws \Exception
-     */
     public function onCompileArticle(FrontendTemplate $objTemplate, array $arrData, Module $module): void
     {
         $isFrontend = $this->isFrontend();
@@ -228,10 +197,6 @@ class HooksListener
 
     }
 
-    /**
-     * @param Template $objTemplate
-     * @return void
-     */
     public function onParseTemplate(Template $objTemplate): void
     {
         $isFrontend = $this->isFrontend();
@@ -256,12 +221,6 @@ class HooksListener
 
     }
 
-    /**
-     * @param ContentModel $element
-     * @param string $buffer
-     * @param $el
-     * @return string
-     */
     public function onGetContentElement(ContentModel $element, string $buffer, $el): string
     {
         if ((int)$element->hasAnimationeffects === 1 && $this->isFrontend()) {
