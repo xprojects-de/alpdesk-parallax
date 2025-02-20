@@ -10,17 +10,20 @@ parameters:
 
     paths:
         - %currentWorkingDirectory%/src
-        - %currentWorkingDirectory%/tests
 
     universalObjectCratesClasses:
         - Contao\Model
-        - Contao\BackendUser
 
     excludePaths:
         - %currentWorkingDirectory%/src/Resources/*
 
     ignoreErrors:
-        - '#Do not throw the \\Exception base class. Instead, extend the \\Exception base class\. More info: http://bit.ly/subtypeexception#'
+        - '#is never assigned null so it can be removed from the property type#'
+        - '#Instanceof between [a-zA-Z0-9\\_]+ and [a-zA-Z0-9\\_]+ will always evaluate to true#'
+        - '#Access to an undefined property Contao\\FrontendTemplate#'
+        - '#Access to an undefined property Contao\\DataContainer#'
+        - '#Strict comparison using !== between array and null will always evaluate to true#'
+        - '#Call to function is_array\(\) with array will always evaluate to true#'
+        - identifier: missingType.iterableValue
 
     treatPhpDocTypesAsCertain: false
-    checkMissingIterableValueType: false

@@ -2,9 +2,6 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="ae26453f-1d47-4a09-940f-d42a6a5ecfd7" name="alpdesk-parallax" url="https://contao.local-latest:8890">
-        <fileTransfer mountedRoot="$PROJECT_DIR$/../../MAMPP/contao.local-latest/vendor/alpdesk" accessType="MOUNT" port="0" />
-      </webServer>
       <webServer id="509c7d5f-592e-4f01-a92c-bd89134e3299" name="contao5-local" url="https://contao.local5-latest:8890">
         <fileTransfer mountedRoot="$PROJECT_DIR$/../../MAMPP/contao.local5-latest/vendor/alpdesk" accessType="MOUNT" port="0" />
       </webServer>
