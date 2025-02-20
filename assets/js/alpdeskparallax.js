@@ -19,7 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function getParallaxScrollOffset(element) {
 
-        let diff = element.getBoundingClientRect().top - window.innerHeight;
+        const elementTop = element.getBoundingClientRect().top + window.scrollY;
+        let diff = elementTop - window.innerHeight;
+
         return diff < 0 ? 0 : diff;
 
     }
