@@ -15,7 +15,8 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
         'sql' => [
             'keys' => [
                 'id' => 'primary',
-                'title' => 'index'
+                'title' => 'index',
+                'published' => 'index'
             ]
         ]
     ],
@@ -46,20 +47,13 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
                 'href' => 'act=edit',
                 'icon' => 'header.gif',
             ],
-            'copy' => [
-                'href' => 'act=copy',
-                'icon' => 'copy.gif',
-            ],
+            'copy',
             'toggle' => [
-                'icon' => 'visible.gif',
-                'attributes' => 'onclick="Backend.getScrollOffset();"',
-                'button_callback' => [AlpdeskParallaxUtils::class, 'toggleIcon']
+                'href' => 'act=toggle&amp;field=published',
+                'icon' => 'visible.svg',
+                'showInHeader' => true
             ],
-            'delete' => [
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
-            ],
+            'delete'
         ]
     ],
     'palettes' => [
@@ -81,7 +75,9 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'sql' => "varchar(250) NOT NULL default ''"
         ],
         'published' => [
+            'toggle' => true,
             'exclude' => true,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'inputType' => 'checkbox',
             'eval' => ['doNotCopy' => true, 'tl_class' => 'w50 m12'],
             'sql' => "char(1) NOT NULL default ''"
