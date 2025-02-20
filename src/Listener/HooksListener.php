@@ -18,7 +18,6 @@ use Contao\Environment;
 use Contao\File;
 use Contao\StringUtil;
 use Contao\Validator;
-use Contao\System;
 use Contao\ContentModel;
 use Alpdesk\AlpdeskParallax\Model\AlpdeskanimationsModel;
 use Symfony\Component\Asset\Packages;
@@ -288,7 +287,7 @@ class HooksListener
             }
 
             if (\count($matchesJs) === 0) {
-                $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskanimationeffects.js|async';
+                $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskanimationeffects.js', 'alpdesk_parallax');
             }
 
             $matchesCss = [];
@@ -299,8 +298,7 @@ class HooksListener
             }
 
             if (\count($matchesCss) === 0) {
-                $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
-                $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
+                $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskanimationeffects.css', 'alpdesk_parallax');
             }
 
             $animationCss = $element->animation_animatecssoptions;
