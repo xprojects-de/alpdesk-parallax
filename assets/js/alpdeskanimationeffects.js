@@ -10,73 +10,87 @@ $(document).ready(function () {
         }
 
         $.fn.isInAnimationViewport = function (offsetPercent = 0) {
-            var elementTop = $(this).offset().top;
+
+            let elementTop = $(this).offset().top;
+
             if (offsetPercent !== 0 && elementTop !== 0) {
-                var hPercent = ($(window).height() / 100) * offsetPercent;
+                const hPercent = ($(window).height() / 100) * offsetPercent;
                 elementTop = elementTop + hPercent;
             }
-            var elementBottom = elementTop + $(this).outerHeight();
-            var viewportTop = $(window).scrollTop();
-            var viewportBottom = viewportTop + $(window).height();
+
+            const elementBottom = elementTop + $(this).outerHeight();
+            const viewportTop = $(window).scrollTop();
+            const viewportBottom = viewportTop + $(window).height();
+
             return elementBottom > viewportTop && elementTop < viewportBottom;
+
         };
 
         $.fn.getAnimationXOffset = function (position = 'left') {
-            var o = 0;
+
+            let o = 0;
+
             if (position === 'right') {
                 o = ($(this).parent().width() - $(this).outerWidth());
             } else if (position === 'center') {
                 o = (($(this).parent().width() / 2) - ($(this).outerWidth() / 2));
             }
+
             return o;
+
         };
 
         $.fn.getAnimationYOffset = function (position = 'top') {
-            var o = 0;
+
+            let o = 0;
+
             if (position === 'bottom') {
                 o = ($(this).parent().height() - $(this).outerHeight());
             } else if (position === 'center') {
                 o = (($(this).parent().height() / 2) - ($(this).outerHeight() / 2));
             }
+
             return o;
+
         };
 
-        var animationElements = [];
-        var visibleAnimationElements = [];
-        var processAnimationsScheduled;
+        let animationElements = [];
+        let visibleAnimationElements = [];
+        let processAnimationsScheduled;
 
-        var POSITION_S1 = 's1';
-        var POSITION_S2 = 's2';
-        var POSITION_S3 = 's3';
-        var POSITION_S4 = 's4';
-        var POSITION_S5 = 's5';
-        var POSITION_S6 = 's6';
-        var POSITION_S7 = 's7';
-        var POSITION_S8 = 's8';
-        var POSITION_S9 = 's9';
+        const POSITION_S1 = 's1';
+        const POSITION_S2 = 's2';
+        const POSITION_S3 = 's3';
+        const POSITION_S4 = 's4';
+        const POSITION_S5 = 's5';
+        const POSITION_S6 = 's6';
+        const POSITION_S7 = 's7';
+        const POSITION_S8 = 's8';
+        const POSITION_S9 = 's9';
 
-        var EFFECT_E1 = 'e1';
-        var EFFECT_E2 = 'e2';
-        var EFFECT_E3 = 'e3';
-        var EFFECT_E4 = 'e4';
-        var EFFECT_E5 = 'e5';
-        var EFFECT_E6 = 'e6';
-        var EFFECT_E7 = 'e7';
-        var EFFECT_E8 = 'e8';
-        var EFFECT_E9 = 'e9';
+        const EFFECT_E1 = 'e1';
+        const EFFECT_E2 = 'e2';
+        const EFFECT_E3 = 'e3';
+        const EFFECT_E4 = 'e4';
+        const EFFECT_E5 = 'e5';
+        const EFFECT_E6 = 'e6';
+        const EFFECT_E7 = 'e7';
+        const EFFECT_E8 = 'e8';
+        const EFFECT_E9 = 'e9';
 
-        var EFFECT_SPEED_SLOW = 'slow';
-        var EFFECT_SPEED_SLOW_VALUE = 4000;
-        var EFFECT_SPEED_MIDDLE = 'middle';
-        var EFFECT_SPEED_MIDDLE_VALUE = 2500;
-        var EFFECT_SPEED_FAST = 'fast';
-        var EFFECT_SPEED_FAST_VALUE = 1000;
+        const EFFECT_SPEED_SLOW = 'slow';
+        const EFFECT_SPEED_SLOW_VALUE = 4000;
+        const EFFECT_SPEED_MIDDLE = 'middle';
+        const EFFECT_SPEED_MIDDLE_VALUE = 2500;
+        const EFFECT_SPEED_FAST = 'fast';
+        const EFFECT_SPEED_FAST_VALUE = 1000;
 
-        var TYPE_ARTICLE = 1;
-        var TYPE_CEELEMENT = 2;
+        const TYPE_ARTICLE = 1;
+        const TYPE_CEELEMENT = 2;
 
         function getSpeed(speed) {
-            var s = EFFECT_SPEED_MIDDLE_VALUE;
+
+            let s = EFFECT_SPEED_MIDDLE_VALUE;
             switch (speed) {
                 case EFFECT_SPEED_SLOW: {
                     s = EFFECT_SPEED_SLOW_VALUE;
@@ -93,13 +107,19 @@ $(document).ready(function () {
                 default:
                     break;
             }
+
             return s;
+
         }
 
         function processAnimation() {
-            for (var i = 0; i < animationElements.length; i++) {
-                var parent = animationElements[i].node.parentNode;
+
+            for (let i = 0; i < animationElements.length; i++) {
+
+                const parent = animationElements[i].node.parentNode;
+
                 if ($(parent).isInAnimationViewport(animationElements[i].viewport) && !checkVisibleExists(animationElements[i].node)) {
+
                     visibleAnimationElements.push({
                         node: animationElements[i].node,
                         effect: animationElements[i].effect,
@@ -110,34 +130,45 @@ $(document).ready(function () {
                         type: animationElements[i].type,
                         triggered: false
                     });
+
                 }
+
             }
 
             cancelAnimationFrame(processAnimationsScheduled);
             if (animationElements.length) {
                 processAnimationsScheduled = requestAnimationFrame(updateVisibleElements);
             }
+
         }
 
         function checkVisibleExists(element) {
-            for (var i = 0; i < visibleAnimationElements.length; i++) {
+
+            for (let i = 0; i < visibleAnimationElements.length; i++) {
+
                 if (visibleAnimationElements[i].node === element) {
                     return true;
                 }
+
             }
+
             return false;
+
         }
 
         function updateVisibleElements() {
-            for (var i = 0; i < visibleAnimationElements.length; i++) {
+
+            for (let i = 0; i < visibleAnimationElements.length; i++) {
                 runEffect(visibleAnimationElements[i]);
             }
+
         }
 
         function runEffect(element) {
+
             if (element.triggered === false) {
 
-                var speed = getSpeed(element.speed);
+                const speed = getSpeed(element.speed);
 
                 $(element.node).show();
                 if (element.type === TYPE_CEELEMENT) {
@@ -227,6 +258,7 @@ $(document).ready(function () {
         }
 
         function prepareEffect(node, startposition) {
+
             switch (startposition) {
                 case POSITION_S1: {
                     node.css({
@@ -294,6 +326,7 @@ $(document).ready(function () {
                 default:
                     break;
             }
+
         }
 
         function init() {
@@ -303,21 +336,21 @@ $(document).ready(function () {
 
             $('.has-animationeffects').each(function () {
 
-                var el = $(this);
+                const el = $(this);
 
                 el.find('div.animation-effect').each(function () {
 
-                    var node = $(this);
+                    const node = $(this);
 
                     if (node !== null) {
 
-                        var effect = node.data('effect');
-                        var startposition = node.data('startposition');
-                        var speed = node.data('speed');
-                        var viewport = node.data('viewport');
-                        var hide = node.data('hide');
-                        var ignoremotionreduce = node.data('ignoremotionreduce');
-                        var animateCssOptions = node.data('animationcss');
+                        const effect = node.data('effect');
+                        const startposition = node.data('startposition');
+                        const speed = node.data('speed');
+                        const viewport = node.data('viewport');
+                        const hide = node.data('hide');
+                        const ignoremotionreduce = node.data('ignoremotionreduce');
+                        const animateCssOptions = node.data('animationcss');
 
                         if (hide === 1) {
                             $(node).hide();
@@ -325,17 +358,20 @@ $(document).ready(function () {
 
                         prepareEffect(node, startposition);
 
-                        var push = true;
+                        let push = true;
 
                         if (ignoremotionreduce !== 1) {
+
                             const mediaQueryMotionReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
                             if (!mediaQueryMotionReduce || mediaQueryMotionReduce.matches === true) {
                                 push = false;
                                 $(node).hide();
                             }
+
                         }
 
                         if (push === true) {
+
                             animationElements.push({
                                 node: node[0],
                                 effect: effect,
@@ -345,6 +381,7 @@ $(document).ready(function () {
                                 animateCssOptions: animateCssOptions,
                                 type: TYPE_ARTICLE
                             });
+
                         }
 
                     }
@@ -355,14 +392,14 @@ $(document).ready(function () {
 
             $('.animation-effect-ce').each(function () {
 
-                var node = $(this);
+                const node = $(this);
 
                 if (node !== null) {
 
-                    var speed = node.data('speed');
-                    var viewport = node.data('viewport');
-                    var hide = node.data('hide');
-                    var animateCssOptions = node.data('animationcss');
+                    const speed = node.data('speed');
+                    const viewport = node.data('viewport');
+                    const hide = node.data('hide');
+                    const animateCssOptions = node.data('animationcss');
 
                     if (hide === 1) {
                         $(node).css({
