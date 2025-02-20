@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Alpdesk-Parallax" type="PhpWebAppRunConfigurationType" factoryName="PHP Web Application" browser="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" server_name="https://contao.local-latest:8890" start_url="https://contao.local-latest:8890">
+  <configuration default="false" name="Alpdesk-Parallax" type="PhpWebAppRunConfigurationType" factoryName="PHP Web Application" browser="a7bb68e0-33c0-4d6f-a81a-aac1fdb870c8" server_name="https://contao.local-latest:8890" start_url="https://contao.local5.latest:8890">
     <method v="2" />
   </configuration>
 </component>
