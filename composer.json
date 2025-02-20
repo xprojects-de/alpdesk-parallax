@@ -22,7 +22,8 @@
   },
   "require": {
     "php": "^8.1",
-    "contao/core-bundle": "^5.3"
+    "contao/core-bundle": "^5.3",
+    "symfony/asset": "^6.4 || ^7.0"
   },
   "conflict": {
     "contao/manager-plugin": "<2.0 || >=3.0"

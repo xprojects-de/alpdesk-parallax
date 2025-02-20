@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskParallax\Listener;
 
 use Contao\ArticleModel;
+use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\LayoutModel;
 use Contao\PageModel;
@@ -20,6 +21,7 @@ use Contao\Validator;
 use Contao\System;
 use Contao\ContentModel;
 use Alpdesk\AlpdeskParallax\Model\AlpdeskanimationsModel;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -28,17 +30,29 @@ class HooksListener
     private RequestStack $requestStack;
     private ScopeMatcher $scopeMatcher;
     private string $rootDir;
+    private Packages $packages;
+    private ImageFactoryInterface $imageFactory;
 
     /**
      * @param RequestStack $requestStack
      * @param ScopeMatcher $scopeMatcher
      * @param string $rootDir
+     * @param Packages $packages
+     * @param ImageFactoryInterface $imageFactory
      */
-    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher, string $rootDir)
+    public function __construct(
+        RequestStack          $requestStack,
+        ScopeMatcher          $scopeMatcher,
+        string                $rootDir,
+        Packages              $packages,
+        ImageFactoryInterface $imageFactory
+    )
     {
         $this->requestStack = $requestStack;
         $this->scopeMatcher = $scopeMatcher;
         $this->rootDir = $rootDir;
+        $this->packages = $packages;
+        $this->imageFactory = $imageFactory;
     }
 
     /**
@@ -72,8 +86,9 @@ class HooksListener
                 $jqueryAdded = true;
             }
 
-            $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskparallax.js|async';
-            $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskparallax.css';
+            $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskparallax.js', 'alpdesk_parallax');
+            $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskparallax.css', 'alpdesk_parallax');
+
         }
 
         $objArticleAnimations = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasAnimationeffects=?'), array($objPage->id, 1, 1));
@@ -84,9 +99,9 @@ class HooksListener
                 $GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.js|static';
             }
 
-            $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskanimationeffects.js|async';
-            $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
-            $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
+            $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskanimationeffects.js', 'alpdesk_parallax');
+            $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskanimationeffects.css', 'alpdesk_parallax');
+
         }
 
     }
@@ -105,14 +120,9 @@ class HooksListener
                 throw new \Exception();
             }
 
-            $imageFactory = System::getContainer()->get('contao.image.factory');
-            if ($imageFactory === null) {
-                throw new \Exception();
-            }
+            return $this->imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size))->getUrl($this->rootDir);
 
-            return $imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size))->getUrl($this->rootDir);
-
-        } catch (\Exception $ex) {
+        } catch (\Exception) {
             return null;
         }
 

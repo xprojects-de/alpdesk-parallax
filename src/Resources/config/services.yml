@@ -1,9 +1,17 @@
 services:
+
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
   Alpdesk\AlpdeskParallax\Listener\HooksListener:
     arguments:
       - '@request_stack'
       - '@contao.routing.scope_matcher'
       - '%kernel.project_dir%'
+      - '@assets.packages'
+      - '@contao.image.factory'
     tags:
       - { name: contao.hook, hook: getPageLayout, method: onGetPageLayout, priority: 0 }
       - { name: contao.hook, hook: compileArticle, method: onCompileArticle, priority: 0 }

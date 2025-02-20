@@ -1,3 +1,5 @@
+import '../css/alpdeskparallax.css'
+
 $(document).ready(function () {
 
     (function () {

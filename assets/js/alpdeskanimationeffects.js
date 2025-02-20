@@ -1,3 +1,6 @@
+import '../css/animate.min.css'
+import '../css/alpdeskanimationeffects.css'
+
 $(document).ready(function () {
 
     (function () {
