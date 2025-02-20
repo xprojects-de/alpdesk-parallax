@@ -42,6 +42,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['hasAnimationeffects'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['animation_viewport'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_viewport'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_viewport_options'],
@@ -50,6 +51,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['animation_viewport'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['animation_hide_before_viewport'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_hide_before_viewport'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr'],
@@ -57,6 +59,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['animation_hide_before_viewport'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['animation_speed'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_speed'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_speed_options'],
@@ -65,6 +68,7 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['animation_speed'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['animation_animatecssoptions'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecssoptions'],
     'exclude' => true,
     'inputType' => 'select',
     'options' => AlpdeskParallaxUtils::$animationCssOptions,
