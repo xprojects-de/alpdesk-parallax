@@ -141,19 +141,8 @@ export default class AnimationController extends Controller {
             const parent = this.animationElement.node.parentNode;
             if (this.isInAnimationViewport(parent, this.animationElement.viewport)) {
 
-                const animationElement = {
-                    node: this.animationElement.node,
-                    effect: this.animationElement.effect,
-                    startposition: this.animationElement.startposition,
-                    speed: this.animationElement.speed,
-                    viewport: this.animationElement.viewport,
-                    animateCssOptions: this.animationElement.animateCssOptions,
-                    type: this.animationElement.type,
-                    triggered: false
-                };
-
                 cancelAnimationFrame(this.processAnimationsScheduled);
-                this.processAnimationsScheduled = requestAnimationFrame(() => this.runEffect(animationElement));
+                this.processAnimationsScheduled = requestAnimationFrame(() => this.runEffect(this.animationElement));
 
             }
 
@@ -324,8 +313,10 @@ export default class AnimationController extends Controller {
 
                 const mediaQueryMotionReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
                 if (!mediaQueryMotionReduce || mediaQueryMotionReduce.matches === true) {
+
                     push = false;
                     node.style.display = 'none';
+
                 }
 
             }
@@ -339,7 +330,8 @@ export default class AnimationController extends Controller {
                     speed: speed,
                     viewport: viewport,
                     animateCssOptions: animateCssOptions,
-                    type: this.TYPE_ARTICLE
+                    type: this.TYPE_ARTICLE,
+                    triggered: false
                 };
 
             }
@@ -353,7 +345,8 @@ export default class AnimationController extends Controller {
                 speed: speed,
                 viewport: viewport,
                 animateCssOptions: animateCssOptions,
-                type: this.TYPE_CE_ELEMENT
+                type: this.TYPE_CE_ELEMENT,
+                triggered: false
             };
 
         }

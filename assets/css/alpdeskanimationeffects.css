@@ -15,7 +15,7 @@ div:has(div[data-controller="animation"]) .animation-effect-foreground {
     z-index: 1;
 }
 
-div:has(div[data-controller="animation"]) .animation-effect-hide {
+div[data-animation-hide-value="1"] {
     opacity: 0;
 }
 
