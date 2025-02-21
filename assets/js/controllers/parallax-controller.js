@@ -80,29 +80,14 @@ export default class ParallaxController extends Controller {
 
     scrollParallax() {
 
-        if (this.parallaxElement !== undefined) {
+        if (
+            this.parallaxElement !== undefined &&
+            this.isparallaxValue === '1' &&
+            this.isInParallaxViewport(this.parallaxElement.parent)
+        ) {
 
-            const parallaxActive = this.isparallaxValue;
-            const parent = this.parallaxElement.node.parentNode;
-            if (parallaxActive === '1' && this.isInParallaxViewport(parent)) {
-
-                const parallaxElement = {
-                    node: this.parallaxElement.node,
-                    parent: parent,
-                    vAlign: this.parallaxElement.vAlign,
-                    hAlign: this.parallaxElement.hAlign,
-                    sizeModus: this.parallaxElement.sizeModus,
-                    coverH: this.parallaxElement.coverH,
-                    elementH: this.parallaxElement.elementH,
-                    givenVAlign: parseInt(this.valignValue),
-                    givenHAlign: this.halignValue,
-                    givenVParallax: this.vparallaxValue,
-                };
-
-                cancelAnimationFrame(this.processParallaxScheduled);
-                this.processParallaxScheduled = requestAnimationFrame(() => this.setPosition(parallaxElement));
-
-            }
+            cancelAnimationFrame(this.processParallaxScheduled);
+            this.processParallaxScheduled = requestAnimationFrame(() => this.setPosition(this.parallaxElement));
 
         }
 
@@ -164,7 +149,18 @@ export default class ParallaxController extends Controller {
             this.valignValue = this.prepareBackgroundYAlign(node.offsetHeight, srcHeight, vAlign, sizeModus).toString();
             this.halignValue = hAlign;
 
-            this.parallaxElement = {node, vAlign, hAlign, sizeModus, coverH, elementH};
+            this.parallaxElement = {
+                node: node,
+                parent: node.parentElement,
+                vAlign: vAlign,
+                hAlign: hAlign,
+                sizeModus: sizeModus,
+                coverH: coverH,
+                elementH: elementH,
+                givenVAlign: this.valignValue,
+                givenHAlign: this.halignValue,
+                givenVParallax: this.vparallaxValue,
+            };
 
             this.scrollParallax();
 
