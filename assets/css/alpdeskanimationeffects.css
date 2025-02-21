@@ -1,9 +1,9 @@
 
-.has-animationeffects {
+div:has(div[data-controller="animation"]) {
     position: relative;
 }
 
-.has-animationeffects .animation-effect {
+div:has(div[data-controller="animation"]) .animation-effect {
     position: absolute;
     z-index: -199;
     top: 0;
@@ -11,16 +11,18 @@
     animation-duration: 5s;
 }
 
-.has-animationeffects .animation-effect-foreground {
+div:has(div[data-controller="animation"]) .animation-effect-foreground {
     z-index: 1;
 }
 
-.has-animationeffects .animation-effect-hide {
+div:has(div[data-controller="animation"]) .animation-effect-hide {
     opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .has-animationeffects .animation-effect-reducedmotion {
+
+    div:has(div[data-controller="animation"]) .animation-effect-reducedmotion {
         display: none;
     }
+
 }

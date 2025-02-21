@@ -1,4 +1,4 @@
-import {Controller} from "@hotwired/stimulus";
+import {Controller} from '@hotwired/stimulus';
 
 export default class ParallaxController extends Controller {
 
@@ -10,7 +10,7 @@ export default class ParallaxController extends Controller {
         sizemodus: String,
         valign: String,
         halign: String,
-        vparallax: String,
+        vparallax: String
     }
 
     parallaxElement = undefined;
@@ -148,7 +148,7 @@ export default class ParallaxController extends Controller {
         node.style.backgroundImage = `url(${src})`;
         node.style.backgroundSize = sizeModus;
 
-        if (parallaxActive === '1') {
+        if (parallaxActive === '1' && ('requestAnimationFrame' in window)) {
 
             const elementH = node.parentElement.offsetHeight;
             let coverH = sizeModus === 'cover' ? elementH + (elementH * this.factor) + (this.factor * window.innerHeight) : 0;

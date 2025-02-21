@@ -10,7 +10,6 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\PageModel;
 use Contao\FrontendTemplate;
 use Contao\FilesModel;
-use Contao\Template;
 use Contao\Environment;
 use Contao\File;
 use Contao\StringUtil;
@@ -226,23 +225,6 @@ class HooksListener
     }
 
     /**
-     * @param Template $objTemplate
-     * @return void
-     */
-    public function onParseTemplate(Template $objTemplate): void
-    {
-        $isFrontend = $this->isFrontend();
-
-        if ($isFrontend && $objTemplate->type === 'article' && (int)$objTemplate->hasAnimationeffects === 1) {
-
-            $arrClasses = array('has-animationeffects');
-            $objTemplate->class .= ' ' . \implode(' ', $arrClasses);
-
-        }
-
-    }
-
-    /**
      * @param ContentModel $element
      * @param string $buffer
      * @return string
@@ -276,13 +258,15 @@ class HooksListener
             $animationCss = $element->animation_animatecssoptions;
             if ($animationCss !== null && $animationCss !== '') {
 
-                $classes = 'animation-effect-ce' . ((int)$element->animation_hide_before_viewport === 1 ? ' animation-effect-hide' : '');
+                $classes = ((int)$element->animation_hide_before_viewport === 1 ? ' animation-effect-hide' : '');
 
                 $dataAttributes = \array_filter([
-                    'data-animationcss' => $animationCss,
-                    'data-hide' => ((int)$element->animation_hide_before_viewport === 1 ? 1 : 0),
-                    'data-viewport' => $element->animation_viewport,
-                    'data-speed' => $element->animation_speed], static function ($v) {
+                    'data-controller' => 'animation',
+                    'data-animation-animationcss-value' => $animationCss,
+                    'data-animation-hide-value' => ((int)$element->animation_hide_before_viewport === 1 ? 1 : 0),
+                    'data-animation-viewport-value' => $element->animation_viewport,
+                    'data-animation-type-value' => '2',
+                    'data-animation-speed-value' => $element->animation_speed], static function ($v) {
                     return null !== $v;
                 });
 
