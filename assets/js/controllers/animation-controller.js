@@ -138,8 +138,7 @@ export default class AnimationController extends Controller {
 
         if (this.animationElement !== undefined) {
 
-            const parent = this.animationElement.node.parentNode;
-            if (this.isInAnimationViewport(parent, this.animationElement.viewport)) {
+            if (this.isInAnimationViewport(this.animationElement.node.parentElement, this.animationElement.viewport)) {
 
                 cancelAnimationFrame(this.processAnimationsScheduled);
                 this.processAnimationsScheduled = requestAnimationFrame(() => this.runEffect(this.animationElement));
