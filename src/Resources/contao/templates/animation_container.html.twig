@@ -1,0 +1,25 @@
+{% block animations %}
+
+    <div {{ cssID != '' ? 'id="'  ~  cssID  ~  '"' : '' }}
+            class="animation-effect{{ cssClass != '' ? ' ' ~  cssClass : '' }}{{ hide == true ? ' animation-effect-hide' : '' }}{{ foreground == true ? ' animation-effect-foreground' : '' }}{{ ignoreReducedAnimationMotion == true ? ' animation-effect-reducedmotion' : '' }}"
+            data-startposition="{{ startposition }}"
+            data-effect="{{ effect }}"
+            data-speed="{{ speed }}"
+            data-animationcss="{{ animationCss }}"
+            data-hide="{{ hide == true ? 1 : 0 }}"
+            data-ignoremotionreduce="{{ ignoreReducedAnimationMotion == true ? 1 : 0 }}"
+            data-viewport="{{ viewport }}">
+
+        {% if(animationContentElements|length > 0) %}
+
+            {% for element in animationContentElements %}
+
+                <div class="animation-effect-element">{{ content_element(element) }}</div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}
