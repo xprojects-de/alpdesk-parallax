@@ -146,25 +146,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function animateElement(node, topValue, leftValue, speed) {
 
-        const startTime = performance.now();
-        const initialTop = parseInt(window.getComputedStyle(node).top, 10);
-        const initialLeft = parseInt(window.getComputedStyle(node).left, 10);
-        const deltaTop = topValue - initialTop;
-        const deltaLeft = leftValue - initialLeft;
+        // const startTime = performance.now();
+        // const initialTop = parseInt(window.getComputedStyle(node).top, 10);
+        // const initialLeft = parseInt(window.getComputedStyle(node).left, 10);
+        // const deltaTop = topValue - initialTop;
+        // const deltaLeft = leftValue - initialLeft;
 
-        function animate() {
-            const elapsed = performance.now() - startTime;
-            const progress = Math.min(elapsed / speed, 1);
+        // function animate() {
+        //     const elapsed = performance.now() - startTime;
+        //     const progress = Math.min(elapsed / speed, 1);
+        //
+        //     node.style.top = (initialTop + deltaTop * progress) + 'px';
+        //     node.style.left = (initialLeft + deltaLeft * progress) + 'px';
+        //
+        //     if (progress < 1) {
+        //         requestAnimationFrame(animate);
+        //     }
+        // }
+        //
+        // requestAnimationFrame(animate);
 
-            node.style.top = (initialTop + deltaTop * progress) + 'px';
-            node.style.left = (initialLeft + deltaLeft * progress) + 'px';
+        node.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
+        node.style.top = topValue + 'px';
+        node.style.left = leftValue + 'px';
 
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            }
-        }
-
-        requestAnimationFrame(animate);
     }
 
 
