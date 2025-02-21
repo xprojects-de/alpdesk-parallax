@@ -43,9 +43,6 @@ export default class AnimationController extends Controller {
     EFFECT_SPEED_FAST = 'fast';
     EFFECT_SPEED_FAST_VALUE = 1000;
 
-    TYPE_ARTICLE = 1;
-    TYPE_CE_ELEMENT = 2;
-
     connect() {
 
         super.connect();
@@ -327,9 +324,8 @@ export default class AnimationController extends Controller {
                     effect: effect,
                     startposition: startposition,
                     speed: speed,
-                    viewport: viewport,
+                    viewport: parseInt(viewport),
                     animateCssOptions: animateCssOptions,
-                    type: this.TYPE_ARTICLE,
                     triggered: false
                 };
 
@@ -342,9 +338,8 @@ export default class AnimationController extends Controller {
                 effect: '',
                 startposition: '',
                 speed: speed,
-                viewport: viewport,
+                viewport: parseInt(viewport),
                 animateCssOptions: animateCssOptions,
-                type: this.TYPE_CE_ELEMENT,
                 triggered: false
             };
 

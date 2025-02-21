@@ -260,13 +260,16 @@ class HooksListener
 
                 $classes = ((int)$element->animation_hide_before_viewport === 1 ? ' animation-effect-hide' : '');
 
-                $dataAttributes = \array_filter([
-                    'data-controller' => 'animation',
-                    'data-animation-animationcss-value' => $animationCss,
-                    'data-animation-hide-value' => ((int)$element->animation_hide_before_viewport === 1 ? 1 : 0),
-                    'data-animation-viewport-value' => $element->animation_viewport,
-                    'data-animation-type-value' => '2',
-                    'data-animation-speed-value' => $element->animation_speed], static function ($v) {
+                $dataAttributes = \array_filter(
+                    [
+                        'data-controller' => 'animation',
+                        'data-animation-animationcss-value' => $animationCss,
+                        'data-animation-hide-value' => ((int)$element->animation_hide_before_viewport === 1 ? 1 : 0),
+                        'data-animation-viewport-value' => $element->animation_viewport,
+                        'data-animation-type-value' => '2',
+                        'data-animation-speed-value' => $element->animation_speed,
+                        'data-action' => 'scroll@window->animation#scrollWindow resize@window->animation#resizeWindow'
+                    ], static function ($v) {
                     return null !== $v;
                 });
 
