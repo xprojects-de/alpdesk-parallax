@@ -203,7 +203,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/rate-limiter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/type-info" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/toflar/cronjob-supervisor" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/oneup/contao-backend-sortable-list-views" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

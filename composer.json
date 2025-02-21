@@ -29,6 +29,7 @@
     "contao/manager-plugin": "<2.0 || >=3.0"
   },
   "require-dev": {
+    "roave/security-advisories": "dev-latest",
     "contao/manager-bundle": "5.3.*",
     "contao/manager-plugin": "^2.0",
     "contao/conflicts": "@dev",
