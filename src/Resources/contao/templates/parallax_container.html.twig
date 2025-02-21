@@ -1,14 +1,15 @@
 {% block parallax %}
 
-    <div class="parallax-bgimage"
-         data-isparallax="{{ isParallax }}"
-         data-src="{{ src }}"
-         data-srcheight="{{ srcHeight }}"
-         data-srcwidth="{{ srcWidth }}"
-         data-sizemodus="{{ sizemodus }}"
-         data-valign="{{ vAlign }}"
-         data-halign="{{ hAlign }}"
-         data-vparallax="{{ vParallax }}">
+    <div data-controller="parallax"
+         data-parallax-isparallax-value="{{ isParallax }}"
+         data-parallax-src-value="{{ src }}"
+         data-parallax-srcheight-value="{{ srcHeight }}"
+         data-parallax-srcwidth-value="{{ srcWidth }}"
+         data-parallax-sizemodus-value="{{ sizemodus }}"
+         data-parallax-valign-value="{{ vAlign }}"
+         data-parallax-halign-value="{{ hAlign }}"
+         data-parallax-vparallax-value="{{ vParallax }}"
+         data-action="scroll@window->parallax#scrollWindow resize@window->parallax#resizeWindow">
     </div>
 
 {% endblock %}

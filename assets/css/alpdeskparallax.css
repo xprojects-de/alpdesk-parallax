@@ -1,15 +1,15 @@
 
-.has-responsive-background-image {
+div:has(div[data-controller="parallax"]) {
     position: relative;
 }
 
-.has-responsive-background-image.parallax {
+div:has(div[data-parallax-isparallax-value="1"]) {
     background: transparent;
     overflow: hidden;
     margin: 0;
 }
 
-.has-responsive-background-image .parallax-bgimage {
+div[data-controller="parallax"] {
     background-size: auto;
     position: absolute;
     z-index: -200;

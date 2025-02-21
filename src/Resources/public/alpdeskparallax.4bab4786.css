@@ -1,0 +1,1 @@
+div:has(div[data-controller=parallax]){position:relative}div:has(div[data-parallax-isparallax-value="1"]){background:transparent;margin:0;overflow:hidden}div[data-controller=parallax]{background-position-x:left;background-position-y:top;background-repeat:no-repeat;background-size:auto;height:100%;left:0;position:absolute;top:0;width:100%;z-index:-200}

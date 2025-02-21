@@ -233,17 +233,6 @@ class HooksListener
     {
         $isFrontend = $this->isFrontend();
 
-        if ($isFrontend && $objTemplate->type === 'article' && (int)$objTemplate->hasParallaxBackgroundImage === 1) {
-
-            $arrClasses = array('has-responsive-background-image');
-
-            if ((int)$objTemplate->isParallax === 1) {
-                $arrClasses[] = 'parallax';
-            }
-
-            $objTemplate->class .= ' ' . \implode(' ', $arrClasses);
-        }
-
         if ($isFrontend && $objTemplate->type === 'article' && (int)$objTemplate->hasAnimationeffects === 1) {
 
             $arrClasses = array('has-animationeffects');
