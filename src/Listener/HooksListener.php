@@ -69,20 +69,12 @@ class HooksListener
     public function onGetPageLayout(PageModel $objPage): void
     {
         $objArticleParallax = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasParallaxBackgroundImage=?'), array($objPage->id, 1, 1));
+        $objArticleAnimations = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasAnimationeffects=?'), array($objPage->id, 1, 1));
 
-        if ($objArticleParallax !== null) {
+        if ($objArticleParallax !== null || $objArticleAnimations !== null) {
 
             $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskparallax.js', 'alpdesk_parallax');
             $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskparallax.css', 'alpdesk_parallax');
-
-        }
-
-        $objArticleAnimations = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasAnimationeffects=?'), array($objPage->id, 1, 1));
-
-        if ($objArticleAnimations !== null) {
-
-            $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskanimationeffects.js', 'alpdesk_parallax');
-            $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskanimationeffects.css', 'alpdesk_parallax');
 
         }
 
@@ -236,23 +228,23 @@ class HooksListener
             $matchesJs = [];
             if (isset($GLOBALS['TL_JAVASCRIPT'])) {
                 $matchesJs = \array_filter($GLOBALS['TL_JAVASCRIPT'], static function ($v) {
-                    return \strpos($v, 'alpdeskanimationeffects.js');
+                    return \strpos($v, 'alpdeskparallax.js');
                 });
             }
 
             if (\count($matchesJs) === 0) {
-                $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskanimationeffects.js', 'alpdesk_parallax');
+                $GLOBALS['TL_JAVASCRIPT'][] = $this->packages->getUrl('alpdeskparallax.js', 'alpdesk_parallax');
             }
 
             $matchesCss = [];
             if (isset($GLOBALS['TL_CSS'])) {
                 $matchesCss = \array_filter($GLOBALS['TL_CSS'], static function ($v) {
-                    return \strpos($v, 'alpdeskanimationeffects.css');
+                    return \strpos($v, 'alpdeskparallax.css');
                 });
             }
 
             if (\count($matchesCss) === 0) {
-                $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskanimationeffects.css', 'alpdesk_parallax');
+                $GLOBALS['TL_CSS'][] = $this->packages->getUrl('alpdeskparallax.css', 'alpdesk_parallax');
             }
 
             $animationCss = $element->animation_animatecssoptions;

@@ -9,11 +9,7 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
     .addEntry('alpdeskparallax', './assets/js/alpdeskparallax.js')
-    .addEntry('alpdeskanimationeffects', './assets/js/alpdeskanimationeffects.js')
+
 ;
 
-const alpdeskparallax = Encore.getWebpackConfig();
-
-//Encore.reset();
-
-module.exports = [alpdeskparallax];
+module.exports = [Encore.getWebpackConfig()];
