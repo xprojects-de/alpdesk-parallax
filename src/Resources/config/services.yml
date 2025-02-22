@@ -13,6 +13,5 @@ services:
       - '@assets.packages'
       - '@contao.image.factory'
     tags:
-      - { name: contao.hook, hook: getPageLayout, method: onGetPageLayout, priority: 0 }
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
       - { name: contao.hook, hook: compileArticle, method: onCompileArticle, priority: 0 }
-      - { name: contao.hook, hook: getContentElement, method: onGetContentElement, priority: 0 }
