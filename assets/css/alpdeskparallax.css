@@ -1,0 +1,52 @@
+
+div:has(div[data-controller="parallax"]) {
+    position: relative;
+}
+
+div:has(div[data-parallax-isparallax-value="1"]) {
+    background: transparent;
+    overflow: hidden;
+    margin: 0;
+}
+
+div[data-controller="parallax"] {
+    background-size: auto;
+    position: absolute;
+    z-index: -200;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position-x: left;
+    background-position-y: top;
+    background-repeat: no-repeat;
+}
+
+
+div:has(div[data-controller="animation"]) {
+    position: relative;
+}
+
+div:has(div[data-controller="animation"]) .animation-effect {
+    position: absolute;
+    z-index: -199;
+    top: 0;
+    left: 0;
+    animation-duration: 5s;
+}
+
+div:has(div[data-controller="animation"]) .animation-effect-foreground {
+    z-index: 1;
+}
+
+div[data-animation-hide-value="1"] {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    div:has(div[data-controller="animation"]) .animation-effect-reducedmotion {
+        display: none;
+    }
+
+}

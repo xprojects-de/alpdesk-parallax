@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Alpdesk\AlpdeskParallax\Utils\AlpdeskParallaxUtils;
 use Contao\DataContainer;
 use Contao\DC_Table;
@@ -13,7 +15,8 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
         'sql' => [
             'keys' => [
                 'id' => 'primary',
-                'title' => 'index'
+                'title' => 'index',
+                'published' => 'index'
             ]
         ]
     ],
@@ -30,7 +33,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
         ],
         'global_operations' => [
             'all' => [
-                'label' => &$GLOBALS['TL_LANG']['MSC']['all'],
                 'href' => 'act=select',
                 'class' => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"'
@@ -38,32 +40,20 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
         ],
         'operations' => [
             'edit' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['edit'],
                 'href' => 'table=tl_content',
                 'icon' => 'edit.gif'
             ],
             'editheader' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['editheader'],
                 'href' => 'act=edit',
                 'icon' => 'header.gif',
             ],
-            'copy' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['copy'],
-                'href' => 'act=copy',
-                'icon' => 'copy.gif',
-            ],
+            'copy',
             'toggle' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['toggle'],
-                'icon' => 'visible.gif',
-                'attributes' => 'onclick="Backend.getScrollOffset();"',
-                'button_callback' => [AlpdeskParallaxUtils::class, 'toggleIcon']
+                'href' => 'act=toggle&amp;field=published',
+                'icon' => 'visible.svg',
+                'showInHeader' => true
             ],
-            'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . ($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? null) . '\'))return false;Backend.getScrollOffset()"',
-            ],
+            'delete'
         ]
     ],
     'palettes' => [
@@ -77,7 +67,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'sql' => "int(10) unsigned NOT NULL default '0'"
         ],
         'title' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['title'],
             'exclude' => true,
             'search' => true,
             'sorting' => true,
@@ -86,21 +75,20 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'sql' => "varchar(250) NOT NULL default ''"
         ],
         'published' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['published'],
+            'toggle' => true,
             'exclude' => true,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'inputType' => 'checkbox',
             'eval' => ['doNotCopy' => true, 'tl_class' => 'w50 m12'],
             'sql' => "char(1) NOT NULL default ''"
         ],
         'ignoreReducedAnimationMotion' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['ignoreReducedAnimationMotion'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'clr'],
             'sql' => "char(1) NOT NULL default ''"
         ],
         'animation_viewport' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_viewport'],
             'exclude' => true,
             'inputType' => 'select',
             'options' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_viewport_options'],
@@ -108,21 +96,18 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'sql' => "varchar(20) NOT NULL default ''"
         ],
         'animation_hide_before_viewport' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_hide_before_viewport'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
             'sql' => "char(1) NOT NULL default ''"
         ],
         'animation_zindex' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_zindex'],
             'exclude' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
             'sql' => "char(1) NOT NULL default ''"
         ],
         'animation_startposition' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_startposition'],
             'exclude' => true,
             'inputType' => 'select',
             'options' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_startposition_options'],
@@ -130,7 +115,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'sql' => "varchar(20) NOT NULL default ''"
         ],
         'animation_speed' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_speed'],
             'exclude' => true,
             'inputType' => 'select',
             'options' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_speed_options'],
@@ -138,7 +122,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'sql' => "varchar(20) NOT NULL default ''"
         ],
         'animation_effect' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_effect'],
             'exclude' => true,
             'inputType' => 'select',
             'options' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_effect_options'],
@@ -146,7 +129,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'sql' => "varchar(20) NOT NULL default ''"
         ],
         'animation_animatecssoptions' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_alpdeskanimations']['animation_animatecssoptions'],
             'exclude' => true,
             'inputType' => 'select',
             'options' => AlpdeskParallaxUtils::$animationCssOptions,
@@ -158,6 +140,6 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             'inputType' => 'text',
             'eval' => ['multiple' => true, 'size' => 2, 'tl_class' => 'w50 clr'],
             'sql' => "varchar(255) NOT NULL default ''"
-        ],
+        ]
     ]
 ];

@@ -1,13 +1,13 @@
 # alpdesk-parallax
 
-NEU: ab V 1.0.0 (Breaking Change)
-1. Die Animationen werden in einem eigenen BackendModul erstellt und dann beim Artikel angewählt.
-Desweiteren können nun alle Inhaltselemente in der Konfiguration ausgewählt werden. Die Animation kann mit einer ID/Klasse versehen werden und dann passend gestyled werden.
-2. Ebenso können Inhaltselemente selber eigens mit einer Animation versehen werden. Dies wird direkt im Contentelement konfiguriert.
-3. "In Respect" der Betriebssystemeinstellungen "Reduced-Motion" werden die Animationen dementsprechend passend konfiguriert. Wenn beispielsweise im iOS "Bewegungen reduzieren" eingestellt ist, werden die Animate.css Animationen nicht ausgeführt.
+## Bundle für Contao um Parallax-Effekte und Animationen zu Artikeln und Inhaltselementen hinzuzufügen
+
+### Neu in V 2.x 
+- Umstellung auf Twig-Templates
+- KEINE Verwendung von JQuery
+- pures Javascript mit symfony/webpack-encore
 
 Dieses Bundle enthält folgenden Funktionalitäten welche über die Artikel-Einstellungen, ContentElement-Einstellungen und dem Backendmodul "Alpdesk-Animationen" konfiguriert werden.
-(Das Bundle setzt jQuery als JavascriptLib voraus welche über das Seitenlayout eingebunden werden muss)
 
 ### Artikel-Hintergrundbild mit optionalem Parallax-Effekt (Legend: Parallax-Hintergrundbild)
 

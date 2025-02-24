@@ -3,3 +3,4 @@
 /.run/
 /vendor/
 /composer.lock
+/node_modules/

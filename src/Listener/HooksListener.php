@@ -4,99 +4,256 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskParallax\Listener;
 
-use Contao\ArticleModel;
+use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\LayoutModel;
-use Contao\PageModel;
-use Contao\PageRegular;
 use Contao\FrontendTemplate;
 use Contao\FilesModel;
-use Contao\Template;
-use Contao\Module;
 use Contao\Environment;
-use Contao\File;
+use Contao\Image\ImageInterface;
 use Contao\StringUtil;
 use Contao\Validator;
-use Contao\System;
 use Contao\ContentModel;
 use Alpdesk\AlpdeskParallax\Model\AlpdeskanimationsModel;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class HooksListener
 {
     private RequestStack $requestStack;
     private ScopeMatcher $scopeMatcher;
     private string $rootDir;
+    private Packages $packages;
+    private ImageFactoryInterface $imageFactory;
+
+    private bool $addAssets = false;
 
     /**
      * @param RequestStack $requestStack
      * @param ScopeMatcher $scopeMatcher
      * @param string $rootDir
+     * @param Packages $packages
+     * @param ImageFactoryInterface $imageFactory
      */
-    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher, string $rootDir)
+    public function __construct(
+        RequestStack          $requestStack,
+        ScopeMatcher          $scopeMatcher,
+        string                $rootDir,
+        Packages              $packages,
+        ImageFactoryInterface $imageFactory
+    )
     {
         $this->requestStack = $requestStack;
         $this->scopeMatcher = $scopeMatcher;
         $this->rootDir = $rootDir;
+        $this->packages = $packages;
+        $this->imageFactory = $imageFactory;
     }
 
     /**
-     * @return bool
+     * @param ResponseEvent $event
+     * @return void
      */
-    private function isFrontend(): bool
+    public function onKernelResponse(ResponseEvent $event): void
+    {
+        $request = $event->getRequest();
+
+        if (!$this->scopeMatcher->isFrontendRequest($request)) {
+            return;
+        }
+
+        $response = $event->getResponse();
+        $content = $response->getContent();
+
+        if ($this->addAssets === true && $this->isPageTemplate($event) === true) {
+
+            $pos = \strripos($content, '</head>');
+            if (false !== $pos) {
+
+                $scriptCss = '<script src="' . $this->packages->getUrl('alpdeskparallax.js', 'alpdesk_parallax') . '"></script>' . "\n";
+                $scriptCss .= '<link rel="stylesheet" href="' . $this->packages->getUrl('alpdeskparallax.css', 'alpdesk_parallax') . '">';
+
+                $content = substr($content, 0, $pos) . "\n" . $scriptCss . "\n" . substr($content, $pos);
+
+                $response->setContent($content);
+
+            }
+
+        }
+
+        if ($request->attributes->has('contentModel')) {
+
+            $contentModel = $request->attributes->get('contentModel');
+
+            if (!$contentModel instanceof ContentModel) {
+                $contentModel = ContentModel::findByPk($contentModel);
+            }
+
+            if ((int)$contentModel->hasAnimationeffects === 1) {
+
+                $animationCss = $contentModel->animation_animatecssoptions;
+                if ($animationCss !== null && $animationCss !== '') {
+
+                    $this->addAssets = true;
+
+                    $classes = ((int)$contentModel->animation_hide_before_viewport === 1 ? ' animation-effect-hide' : '');
+
+                    $dataAttributes = \array_filter(
+                        [
+                            'data-controller' => 'animation',
+                            'data-animation-animationcss-value' => $animationCss,
+                            'data-animation-hide-value' => ((int)$contentModel->animation_hide_before_viewport === 1 ? 1 : 0),
+                            'data-animation-viewport-value' => $contentModel->animation_viewport,
+                            'data-animation-type-value' => '2',
+                            'data-animation-speed-value' => $contentModel->animation_speed,
+                            'data-action' => 'scroll@window->animation#scrollWindow resize@window->animation#resizeWindow'
+                        ], static function ($v) {
+                        return null !== $v;
+                    });
+
+                    $content = \preg_replace_callback('|<([a-zA-Z0-9]+)(\s[^>]*?)?(?<!/)>|', static function ($matches) use ($classes, $dataAttributes) {
+                        $tag = $matches[1];
+                        $attributes = $matches[2];
+
+                        $attributes = preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
+                        if (0 === $count) {
+                            $attributes .= ' class="' . $classes . '"';
+                        }
+
+                        foreach ($dataAttributes as $key => $value) {
+                            $attributes .= ' ' . $key . '="' . $value . '"';
+                        }
+
+                        return "<{$tag}{$attributes}>";
+                    }, $content, 1);
+
+                    $response->setContent($content);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    /**
+     * @param FrontendTemplate $objTemplate
+     * @param array $arrData
+     * @return void
+     * @throws \Exception
+     */
+    public function onCompileArticle(FrontendTemplate $objTemplate, array $arrData): void
     {
         if (!$this->requestStack->getCurrentRequest() instanceof Request) {
+            return;
+        }
+
+        if (!$this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest())) {
+            return;
+        }
+
+        if ((int)$arrData['hasParallaxBackgroundImage'] === 1) {
+
+            $imageInterface = $this->getImage($arrData['singleSRC'], $arrData['size']);
+            if ($imageInterface !== null) {
+
+                $this->addAssets = true;
+
+                $templateBackgroundImage = new FrontendTemplate('parallax_container');
+
+                $templateBackgroundImage->isParallax = ((int)$arrData['isParallax'] === 1 ? 1 : 0);
+                $templateBackgroundImage->src = Environment::get('base') . $imageInterface->getUrl($this->rootDir);
+                $templateBackgroundImage->srcHeight = $imageInterface->getDimensions()->getSize()->getHeight();
+                $templateBackgroundImage->srcWidth = $imageInterface->getDimensions()->getSize()->getWidth();
+                $templateBackgroundImage->hAlign = ($arrData['hAlign'] !== '') ? $arrData['hAlign'] : 'center';
+                $templateBackgroundImage->vAlign = ($arrData['vAlign'] !== '') ? $arrData['vAlign'] : 'center';
+                $templateBackgroundImage->sizemodus = ($arrData['sizemodus'] !== '') ? $arrData['sizemodus'] : 'auto';
+                $templateBackgroundImage->vParallax = ($arrData['vParallax'] !== '') ? $arrData['vParallax'] : '0';
+
+                $templateBackgroundImageContent = $templateBackgroundImage->getResponse()->getContent();
+
+                $elements = $objTemplate->elements;
+
+                \array_unshift($elements, $templateBackgroundImageContent);
+
+                $objTemplate->elements = $elements;
+
+            }
+
+        }
+
+        if ((int)$arrData['hasAnimationeffects'] === 1) {
+
+            $elements = $objTemplate->elements;
+
+            if (\array_key_exists('alpdeskanimation', $arrData) && $arrData['alpdeskanimation'] !== '') {
+
+                $animationItems = StringUtil::deserialize($arrData['alpdeskanimation']);
+                if (\is_array($animationItems) && \count($animationItems) > 0) {
+
+                    $this->addAssets = true;
+
+                    foreach ($animationItems as $animationItem) {
+
+                        $effectResponse = $this->appendAnimationEffect((int)$animationItem);
+                        if ($effectResponse instanceof Response) {
+                            \array_unshift($elements, $effectResponse->getContent());
+                        }
+
+                    }
+
+                }
+
+            }
+
+            $objTemplate->elements = $elements;
+
+        }
+
+    }
+
+    /**
+     * @param ResponseEvent $event
+     * @return bool
+     */
+    private function isPageTemplate(ResponseEvent $event): bool
+    {
+        $request = $event->getRequest();
+        $response = $event->getResponse();
+
+        if (
+            !$this->scopeMatcher->isFrontendMainRequest($event) ||
+            $request->isXmlHttpRequest() ||
+            (!$response->isSuccessful() && !$response->isClientError())
+        ) {
             return false;
         }
 
-        return $this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest());
-    }
-
-    /**
-     * @param PageModel $objPage
-     * @param LayoutModel $objLayout
-     * @param PageRegular $objPageRegular
-     * @return void
-     */
-    public function onGetPageLayout(PageModel $objPage, LayoutModel $objLayout, PageRegular $objPageRegular): void
-    {
-        $jqueryAdded = false;
-
-        $objArticleParallax = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasParallaxBackgroundImage=?'), array($objPage->id, 1, 1));
-
-        if ($objArticleParallax !== null) {
-
-            if (!$objLayout->addJQuery) {
-                $GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.js|static';
-                $jqueryAdded = true;
-            }
-
-            $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskparallax.js|async';
-            $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskparallax.css';
+        if (
+            'html' !== $request->getRequestFormat() ||
+            !str_contains((string)$response->headers->get('Content-Type'), 'text/html') ||
+            false !== stripos((string)$response->headers->get('Content-Disposition'), 'attachment;')
+        ) {
+            return false;
         }
 
-        $objArticleAnimations = ArticleModel::findBy(array('tl_article.pid=?', 'tl_article.published=?', 'tl_article.hasAnimationeffects=?'), array($objPage->id, 1, 1));
-
-        if ($objArticleAnimations !== null) {
-
-            if (!$objLayout->addJQuery && $jqueryAdded === false) {
-                $GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.js|static';
-            }
-
-            $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskanimationeffects.js|async';
-            $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
-            $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
+        if (false === strripos($response->getContent(), '</body>')) {
+            return false;
         }
+
+        return true;
 
     }
 
     /**
      * @param string $path
      * @param string $size
-     * @return string|null
+     * @return ImageInterface|null
      */
-    private function getImage(string $path, string $size = ''): ?string
+    private function getImage(string $path, string $size = ''): ?ImageInterface
     {
         try {
 
@@ -105,14 +262,9 @@ class HooksListener
                 throw new \Exception();
             }
 
-            $imageFactory = System::getContainer()->get('contao.image.factory');
-            if ($imageFactory === null) {
-                throw new \Exception();
-            }
+            return $this->imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size));
 
-            return $imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size))->getUrl($this->rootDir);
-
-        } catch (\Exception $ex) {
+        } catch (\Exception) {
             return null;
         }
 
@@ -120,9 +272,9 @@ class HooksListener
 
     /**
      * @param int $animationItemId
-     * @return FrontendTemplate|null
+     * @return Response|null
      */
-    private function appendAnimationEffect(int $animationItemId): ?FrontendTemplate
+    private function appendAnimationEffect(int $animationItemId): ?Response
     {
         if ($animationItemId <= 0) {
             return null;
@@ -172,159 +324,7 @@ class HooksListener
             $templateAnimation->animationCss = $animationCss;
         }
 
-        return $templateAnimation;
-
-    }
-
-    /**
-     * @param FrontendTemplate $objTemplate
-     * @param array $arrData
-     * @param Module $module
-     * @throws \Exception
-     */
-    public function onCompileArticle(FrontendTemplate $objTemplate, array $arrData, Module $module): void
-    {
-        $isFrontend = $this->isFrontend();
-
-        if ($isFrontend && (int)$arrData['hasParallaxBackgroundImage'] === 1) {
-
-            $tmp = $this->getImage($arrData['singleSRC'], $arrData['size']);
-            if ($tmp !== null && $tmp !== '') {
-
-                $templateBackgroundImage = new FrontendTemplate('parallax_container');
-
-                $srcImage = new File($tmp);
-
-                $templateBackgroundImage->isParallax = ((int)$arrData['isParallax'] === 1 ? 1 : 0);
-                $templateBackgroundImage->src = Environment::get('base') . $srcImage->path;
-                $templateBackgroundImage->srcHeight = $srcImage->height;
-                $templateBackgroundImage->srcWidth = $srcImage->width;
-                $templateBackgroundImage->hAlign = ($arrData['hAlign'] !== '') ? $arrData['hAlign'] : 'center';
-                $templateBackgroundImage->vAlign = ($arrData['vAlign'] !== '') ? $arrData['vAlign'] : 'center';
-                $templateBackgroundImage->sizemodus = ($arrData['sizemodus'] !== '') ? $arrData['sizemodus'] : 'auto';
-                $templateBackgroundImage->vParallax = ($arrData['vParallax'] !== '') ? $arrData['vParallax'] : '0';
-                $elements = $objTemplate->elements;
-
-                \array_unshift($elements, $templateBackgroundImage->parse());
-
-                $objTemplate->elements = $elements;
-            }
-        }
-
-        if ($isFrontend && (int)$arrData['hasAnimationeffects'] === 1) {
-
-            $elements = $objTemplate->elements;
-            if (\array_key_exists('alpdeskanimation', $arrData) && $arrData['alpdeskanimation'] !== '') {
-
-                $animationItems = StringUtil::deserialize($arrData['alpdeskanimation']);
-                if (\is_array($animationItems) && \count($animationItems) > 0) {
-                    foreach ($animationItems as $animationItem) {
-                        $effect = $this->appendAnimationEffect((int)$animationItem);
-                        if ($effect !== null) {
-                            \array_unshift($elements, $effect->parse());
-                        }
-                    }
-                }
-            }
-
-            $objTemplate->elements = $elements;
-        }
-
-    }
-
-    /**
-     * @param Template $objTemplate
-     * @return void
-     */
-    public function onParseTemplate(Template $objTemplate): void
-    {
-        $isFrontend = $this->isFrontend();
-
-        if ($isFrontend && $objTemplate->type === 'article' && (int)$objTemplate->hasParallaxBackgroundImage === 1) {
-
-            $arrClasses = array('has-responsive-background-image');
-
-            if ((int)$objTemplate->isParallax === 1) {
-                $arrClasses[] = 'parallax';
-            }
-
-            $objTemplate->class .= ' ' . \implode(' ', $arrClasses);
-        }
-
-        if ($isFrontend && $objTemplate->type === 'article' && (int)$objTemplate->hasAnimationeffects === 1) {
-
-            $arrClasses = array('has-animationeffects');
-            $objTemplate->class .= ' ' . \implode(' ', $arrClasses);
-
-        }
-
-    }
-
-    /**
-     * @param ContentModel $element
-     * @param string $buffer
-     * @param $el
-     * @return string
-     */
-    public function onGetContentElement(ContentModel $element, string $buffer, $el): string
-    {
-        if ((int)$element->hasAnimationeffects === 1 && $this->isFrontend()) {
-
-            $matchesJs = [];
-            if (isset($GLOBALS['TL_JAVASCRIPT'])) {
-                $matchesJs = \array_filter($GLOBALS['TL_JAVASCRIPT'], static function ($v) {
-                    return \strpos($v, 'alpdeskanimationeffects.js');
-                });
-            }
-
-            if (\count($matchesJs) === 0) {
-                $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/alpdeskparallax/js/alpdeskanimationeffects.js|async';
-            }
-
-            $matchesCss = [];
-            if (isset($GLOBALS['TL_CSS'])) {
-                $matchesCss = \array_filter($GLOBALS['TL_CSS'], static function ($v) {
-                    return \strpos($v, 'alpdeskanimationeffects.css');
-                });
-            }
-
-            if (\count($matchesCss) === 0) {
-                $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/alpdeskanimationeffects.css';
-                $GLOBALS['TL_CSS'][] = 'bundles/alpdeskparallax/css/animate.min.css';
-            }
-
-            $animationCss = $element->animation_animatecssoptions;
-            if ($animationCss !== null && $animationCss !== '') {
-
-                $classes = 'animation-effect-ce' . ((int)$element->animation_hide_before_viewport === 1 ? ' animation-effect-hide' : '');
-
-                $dataAttributes = \array_filter([
-                    'data-animationcss' => $animationCss,
-                    'data-hide' => ((int)$element->animation_hide_before_viewport === 1 ? 1 : 0),
-                    'data-viewport' => $element->animation_viewport,
-                    'data-speed' => $element->animation_speed], static function ($v) {
-                    return null !== $v;
-                });
-
-                $buffer = \preg_replace_callback('|<([a-zA-Z0-9]+)(\s[^>]*?)?(?<!/)>|', static function ($matches) use ($classes, $dataAttributes) {
-                    $tag = $matches[1];
-                    $attributes = $matches[2];
-
-                    $attributes = preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
-                    if (0 === $count) {
-                        $attributes .= ' class="' . $classes . '"';
-                    }
-
-                    foreach ($dataAttributes as $key => $value) {
-                        $attributes .= ' ' . $key . '="' . $value . '"';
-                    }
-
-                    return "<{$tag}{$attributes}>";
-                }, $buffer, 1);
-            }
-        }
-
-        return $buffer;
+        return $templateAnimation->getResponse();
 
     }
 

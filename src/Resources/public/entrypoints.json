@@ -1,0 +1,12 @@
+{
+  "entrypoints": {
+    "alpdeskparallax": {
+      "css": [
+        "/bundles/alpdeskparallax/alpdeskparallax.3566a605.css"
+      ],
+      "js": [
+        "/bundles/alpdeskparallax/alpdeskparallax.069dcb08.js"
+      ]
+    }
+  }
+}

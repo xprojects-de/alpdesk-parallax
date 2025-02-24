@@ -1,0 +1,37 @@
+{% block animations %}
+
+    <div {{ cssID != '' ? 'id="'  ~  cssID  ~  '"' : '' }}
+            class="animation-effect{{ cssClass != '' ? ' ' ~  cssClass : '' }}{{ hide == true ? ' animation-effect-hide' : '' }}{{ foreground == true ? ' animation-effect-foreground' : '' }}{{ ignoreReducedAnimationMotion == true ? ' animation-effect-reducedmotion' : '' }}"
+            data-startposition="{{ startposition }}"
+            data-effect="{{ effect }}"
+            data-speed="{{ speed }}"
+            data-animationcss="{{ animationCss }}"
+            data-hide="{{ hide == true ? 1 : 0 }}"
+            data-ignoremotionreduce="{{ ignoreReducedAnimationMotion == true ? 1 : 0 }}"
+            data-viewport="{{ viewport }}"
+
+            data-controller="animation"
+            data-animation-startposition-value="{{ startposition }}"
+            data-animation-effect-value="{{ effect }}"
+            data-animation-speed-value="{{ speed }}"
+            data-animation-animationcss-value="{{ animationCss }}"
+            data-animation-hide-value="{{ hide == true ? 1 : 0 }}"
+            data-animation-ignoremotionreduce-value="{{ ignoreReducedAnimationMotion == true ? 1 : 0 }}"
+            data-animation-viewport-value="{{ viewport }}"
+            data-animation-type-value="1"
+            data-action="scroll@window->animation#scrollWindow resize@window->animation#resizeWindow"
+    >
+
+        {% if(animationContentElements|length > 0) %}
+
+            {% for element in animationContentElements %}
+
+                <div class="animation-effect-element">{{ content_element(element) }}</div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}

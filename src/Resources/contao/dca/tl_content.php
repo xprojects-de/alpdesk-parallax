@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Contao\Input;
 use Contao\DataContainer;
 use Contao\Controller;
@@ -33,7 +35,6 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'hasAnimationef
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['hasAnimationeffects'] = 'animation_hide_before_viewport,animation_viewport,animation_speed,animation_animatecssoptions';
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['hasAnimationeffects'] = [
-    'label' => &$GLOBALS['TL_LANG']['tl_content']['hasAnimationeffects'],
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true],

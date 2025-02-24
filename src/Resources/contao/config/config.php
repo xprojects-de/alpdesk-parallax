@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Alpdesk\AlpdeskParallax\Model\AlpdeskanimationsModel;
 
 $GLOBALS['TL_MODELS']['tl_alpdeskanimations'] = AlpdeskanimationsModel::class;
