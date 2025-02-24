@@ -9,7 +9,7 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\FrontendTemplate;
 use Contao\FilesModel;
 use Contao\Environment;
-use Contao\File;
+use Contao\Image\ImageInterface;
 use Contao\StringUtil;
 use Contao\Validator;
 use Contao\ContentModel;
@@ -157,19 +157,17 @@ class HooksListener
 
         if ((int)$arrData['hasParallaxBackgroundImage'] === 1) {
 
-            $tmp = $this->getImage($arrData['singleSRC'], $arrData['size']);
-            if ($tmp !== null && $tmp !== '') {
+            $imageInterface = $this->getImage($arrData['singleSRC'], $arrData['size']);
+            if ($imageInterface !== null) {
 
                 $this->addAssets = true;
 
                 $templateBackgroundImage = new FrontendTemplate('parallax_container');
 
-                $srcImage = new File($tmp);
-
                 $templateBackgroundImage->isParallax = ((int)$arrData['isParallax'] === 1 ? 1 : 0);
-                $templateBackgroundImage->src = Environment::get('base') . $srcImage->path;
-                $templateBackgroundImage->srcHeight = $srcImage->height;
-                $templateBackgroundImage->srcWidth = $srcImage->width;
+                $templateBackgroundImage->src = Environment::get('base') . $imageInterface->getUrl($this->rootDir);
+                $templateBackgroundImage->srcHeight = $imageInterface->getDimensions()->getSize()->getHeight();
+                $templateBackgroundImage->srcWidth = $imageInterface->getDimensions()->getSize()->getWidth();
                 $templateBackgroundImage->hAlign = ($arrData['hAlign'] !== '') ? $arrData['hAlign'] : 'center';
                 $templateBackgroundImage->vAlign = ($arrData['vAlign'] !== '') ? $arrData['vAlign'] : 'center';
                 $templateBackgroundImage->sizemodus = ($arrData['sizemodus'] !== '') ? $arrData['sizemodus'] : 'auto';
@@ -253,9 +251,9 @@ class HooksListener
     /**
      * @param string $path
      * @param string $size
-     * @return string|null
+     * @return ImageInterface|null
      */
-    private function getImage(string $path, string $size = ''): ?string
+    private function getImage(string $path, string $size = ''): ?ImageInterface
     {
         try {
 
@@ -264,7 +262,7 @@ class HooksListener
                 throw new \Exception();
             }
 
-            return $this->imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size))->getUrl($this->rootDir);
+            return $this->imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size));
 
         } catch (\Exception) {
             return null;
