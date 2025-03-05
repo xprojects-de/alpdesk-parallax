@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskParallax\Listener;
 
+use Contao\ArticleModel;
 use Contao\CoreBundle\Image\ImageFactoryInterface;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\FrontendTemplate;
@@ -134,6 +135,47 @@ class HooksListener
                 }
 
             }
+
+        }
+
+    }
+
+    public function onGetArticle(ArticleModel $articleModel): void
+    {
+        if (!$this->requestStack->getCurrentRequest() instanceof Request) {
+            return;
+        }
+
+        if (!$this->scopeMatcher->isFrontendRequest($this->requestStack->getCurrentRequest())) {
+            return;
+        }
+
+        $customClasses = [];
+
+        if ((int)$articleModel->hasParallaxBackgroundImage === 1) {
+
+            $this->addAssets = true;
+
+            $customClasses = ['has-responsive-background-image'];
+
+            if ((int)$articleModel->isParallax === 1) {
+                $customClasses[] = 'parallax';
+            }
+
+        }
+
+        if ((int)$articleModel->hasAnimationeffects === 1) {
+
+            $this->addAssets = true;
+            $customClasses[] = 'has-animationeffects';
+
+        }
+
+        if (\count($customClasses) > 0) {
+
+            $articleModelClasses = StringUtil::deserialize($articleModel->cssID, true);
+            $articleModelClasses[1] .= ' ' . \implode(' ', $customClasses);
+            $articleModel->cssID = \serialize($articleModelClasses);
 
         }
 

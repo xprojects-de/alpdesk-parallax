@@ -15,3 +15,4 @@ services:
     tags:
       - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
       - { name: contao.hook, hook: compileArticle, method: onCompileArticle, priority: 0 }
+      - { name: contao.hook, hook: getArticle, method: onGetArticle, priority: 0 }
