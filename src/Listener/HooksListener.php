@@ -154,6 +154,8 @@ class HooksListener
 
         if ((int)$articleModel->hasParallaxBackgroundImage === 1) {
 
+            $this->addAssets = true;
+
             $customClasses = ['has-responsive-background-image'];
 
             if ((int)$articleModel->isParallax === 1) {
@@ -163,7 +165,10 @@ class HooksListener
         }
 
         if ((int)$articleModel->hasAnimationeffects === 1) {
+
+            $this->addAssets = true;
             $customClasses[] = 'has-animationeffects';
+
         }
 
         if (\count($customClasses) > 0) {
