@@ -115,8 +115,8 @@ class HooksListener
                     });
 
                     $content = \preg_replace_callback('|<([a-zA-Z0-9]+)(\s[^>]*?)?(?<!/)>|', static function ($matches) use ($classes, $dataAttributes) {
-
-                        [$tag, $attributes] = $matches;
+                        $tag = $matches[1];
+                        $attributes = $matches[2];
 
                         $attributes = preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
                         if (0 === $count) {
@@ -343,7 +343,10 @@ class HooksListener
 
         $cssIDClass = StringUtil::deserialize($animationModel->cssID);
         if (\is_array($cssIDClass) && \count($cssIDClass) === 2) {
-            [$cssID, $cssClass] = $cssIDClass;
+
+            $cssID = $cssIDClass[0];
+            $cssClass = $cssIDClass[1];
+
         }
 
         $templateAnimation->cssID = $cssID;
