@@ -39,20 +39,10 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
             ]
         ],
         'operations' => [
-            'edit' => [
-                'href' => 'table=tl_content',
-                'icon' => 'edit.gif'
-            ],
-            'editheader' => [
-                'href' => 'act=edit',
-                'icon' => 'header.gif',
-            ],
+            'edit',
+            'editheader',
             'copy',
-            'toggle' => [
-                'href' => 'act=toggle&amp;field=published',
-                'icon' => 'visible.svg',
-                'showInHeader' => true
-            ],
+            'toggle',
             'delete'
         ]
     ],
