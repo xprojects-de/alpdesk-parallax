@@ -76,7 +76,7 @@ class HooksListener
                 $scriptCss = '<script src="' . $this->packages->getUrl('alpdeskparallax.js', 'alpdesk_parallax') . '"></script>' . "\n";
                 $scriptCss .= '<link rel="stylesheet" href="' . $this->packages->getUrl('alpdeskparallax.css', 'alpdesk_parallax') . '">';
 
-                $content = substr($content, 0, $pos) . "\n" . $scriptCss . "\n" . substr($content, $pos);
+                $content = \substr($content, 0, $pos) . "\n" . $scriptCss . "\n" . \substr($content, $pos);
 
                 $response->setContent($content);
 
@@ -118,7 +118,7 @@ class HooksListener
                         $tag = $matches[1];
                         $attributes = $matches[2];
 
-                        $attributes = preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
+                        $attributes = \preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
                         if (0 === $count) {
                             $attributes .= ' class="' . $classes . '"';
                         }
@@ -275,9 +275,9 @@ class HooksListener
         }
 
         if (
-            'html' !== $request->getRequestFormat() ||
-            !str_contains((string)$response->headers->get('Content-Type'), 'text/html') ||
-            false !== stripos((string)$response->headers->get('Content-Disposition'), 'attachment;')
+            'html' !== $request->getRequestFormat()
+            || ($response->headers->has('Content-Type') && !\str_contains((string)$response->headers->get('Content-Type'), 'text/html'))
+            || false !== \stripos((string)$response->headers->get('Content-Disposition'), 'attachment;')
         ) {
             return false;
         }
