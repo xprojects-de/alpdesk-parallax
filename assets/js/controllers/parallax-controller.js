@@ -10,7 +10,8 @@ export default class ParallaxController extends Controller {
         sizemodus: String,
         valign: String,
         halign: String,
-        vparallax: String
+        vparallax: String,
+        mediaqueries: String
     }
 
     parallaxElement = undefined;
@@ -127,8 +128,35 @@ export default class ParallaxController extends Controller {
         const sizeModus = this.sizemodusValue;
         const hAlign = this.halignValue;
         const vAlign = this.valignValue;
-        const src = this.srcValue;
-        const srcHeight = this.srcheightValue;
+
+        let src = this.srcValue;
+        let srcHeight = this.srcheightValue;
+        let mediaQueries = this.mediaqueriesValue;
+
+        if (mediaQueries !== '') {
+
+            const jsonMediaQueries = JSON.parse(mediaQueries);
+
+            for (const query of jsonMediaQueries) {
+                if (query.media !== undefined && query.media !== '') {
+                    const mediaQueryList = window.matchMedia(query.media);
+                    if (
+                        mediaQueryList.matches &&
+                        query.height !== undefined && query.height !== '' &&
+                        query.src !== undefined && query.src !== ''
+                    ) {
+
+                        src = query.src;
+                        srcHeight = query.height;
+
+                        console.log('addnew src', src);
+
+                        break;
+                    }
+                }
+            }
+
+        }
 
         node.style.backgroundImage = `url(${src})`;
         node.style.backgroundSize = sizeModus;

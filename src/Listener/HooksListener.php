@@ -351,12 +351,14 @@ class HooksListener
 
             foreach ($picture['sources'] as $value) {
 
-                if (!isset($value['src'], $value['media'])) {
+                if (!isset($value['src'], $value['width'], $value['height'], $value['media'])) {
                     continue;
                 }
 
                 $mediaQueries[] = [
                     'src' => $value['src'],
+                    'width' => (int)$value['width'],
+                    'height' => (int)$value['height'],
                     'media' => $value['media']
                 ];
 
