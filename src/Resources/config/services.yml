@@ -12,6 +12,7 @@ services:
       - '%kernel.project_dir%'
       - '@assets.packages'
       - '@contao.image.factory'
+      - '@contao.image.studio'
     tags:
       - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
       - { name: contao.hook, hook: compileArticle, method: onCompileArticle, priority: 0 }
