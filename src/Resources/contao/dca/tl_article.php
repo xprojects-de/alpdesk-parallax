@@ -60,7 +60,7 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['size'] = [
 $GLOBALS['TL_DCA']['tl_article']['fields']['sizemodus'] = [
     'exclude' => true,
     'inputType' => 'select',
-    'options' => ['auto', 'cover'],
+    'options' => ['auto', 'cover', 'contain', 'fitWidth'],
     'reference' => &$GLOBALS['TL_LANG']['tl_article']['sizemodus_options'],
     'eval' => ['tl_class' => 'clr w50'],
     'sql' => "varchar(64) NOT NULL default ''"

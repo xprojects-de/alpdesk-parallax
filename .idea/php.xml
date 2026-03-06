@@ -212,25 +212,25 @@
       <path value="$PROJECT_DIR$/vendor/enshrined/svg-sanitize" />
       <path value="$PROJECT_DIR$/vendor/php-feed-io/feed-io" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php84" />
-      <path value="$PROJECT_DIR$/vendor/scssphp/source-span" />
       <path value="$PROJECT_DIR$/vendor/webmozart/assert" />
-      <path value="$PROJECT_DIR$/vendor/web-auth/webauthn-lib" />
-      <path value="$PROJECT_DIR$/vendor/web-auth/cose-lib" />
-      <path value="$PROJECT_DIR$/vendor/web-auth/webauthn-symfony-bundle" />
       <path value="$PROJECT_DIR$/vendor/web-auth/webauthn-stimulus" />
-      <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$PROJECT_DIR$/vendor/web-auth/cose-lib" />
+      <path value="$PROJECT_DIR$/vendor/web-auth/webauthn-lib" />
+      <path value="$PROJECT_DIR$/vendor/web-auth/webauthn-symfony-bundle" />
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-common" />
       <path value="$PROJECT_DIR$/vendor/phpdocumentor/type-resolver" />
+      <path value="$PROJECT_DIR$/vendor/phpdocumentor/reflection-docblock" />
       <path value="$PROJECT_DIR$/vendor/brick/math" />
-      <path value="$PROJECT_DIR$/vendor/cmsig/seal-symfony-bundle" />
+      <path value="$PROJECT_DIR$/vendor/scssphp/source-span" />
       <path value="$PROJECT_DIR$/vendor/cmsig/seal" />
+      <path value="$PROJECT_DIR$/vendor/cmsig/seal-symfony-bundle" />
+      <path value="$PROJECT_DIR$/vendor/spomky-labs/pki-framework" />
+      <path value="$PROJECT_DIR$/vendor/spomky-labs/cbor-php" />
       <path value="$PROJECT_DIR$/vendor/symfony/serializer" />
       <path value="$PROJECT_DIR$/vendor/symfony/validator" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-intl-icu" />
       <path value="$PROJECT_DIR$/vendor/symfony/form" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php85" />
-      <path value="$PROJECT_DIR$/vendor/spomky-labs/cbor-php" />
-      <path value="$PROJECT_DIR$/vendor/spomky-labs/pki-framework" />
       <path value="$PROJECT_DIR$/vendor/phpstan/phpdoc-parser" />
     </include_path>
   </component>

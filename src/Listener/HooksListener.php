@@ -6,11 +6,11 @@ namespace Alpdesk\AlpdeskParallax\Listener;
 
 use Contao\ArticleModel;
 use Contao\CoreBundle\Image\ImageFactoryInterface;
+use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\FrontendTemplate;
 use Contao\FilesModel;
 use Contao\Environment;
-use Contao\Image\ImageInterface;
 use Contao\StringUtil;
 use Contao\Validator;
 use Contao\ContentModel;
@@ -28,6 +28,7 @@ class HooksListener
     private string $rootDir;
     private Packages $packages;
     private ImageFactoryInterface $imageFactory;
+    private Studio $studio;
 
     private bool $addAssets = false;
 
@@ -37,13 +38,15 @@ class HooksListener
      * @param string $rootDir
      * @param Packages $packages
      * @param ImageFactoryInterface $imageFactory
+     * @param Studio $studio
      */
     public function __construct(
         RequestStack          $requestStack,
         ScopeMatcher          $scopeMatcher,
         string                $rootDir,
         Packages              $packages,
-        ImageFactoryInterface $imageFactory
+        ImageFactoryInterface $imageFactory,
+        Studio                $studio
     )
     {
         $this->requestStack = $requestStack;
@@ -51,6 +54,7 @@ class HooksListener
         $this->rootDir = $rootDir;
         $this->packages = $packages;
         $this->imageFactory = $imageFactory;
+        $this->studio = $studio;
     }
 
     /**
@@ -76,7 +80,7 @@ class HooksListener
                 $scriptCss = '<script src="' . $this->packages->getUrl('alpdeskparallax.js', 'alpdesk_parallax') . '"></script>' . "\n";
                 $scriptCss .= '<link rel="stylesheet" href="' . $this->packages->getUrl('alpdeskparallax.css', 'alpdesk_parallax') . '">';
 
-                $content = substr($content, 0, $pos) . "\n" . $scriptCss . "\n" . substr($content, $pos);
+                $content = \substr($content, 0, $pos) . "\n" . $scriptCss . "\n" . \substr($content, $pos);
 
                 $response->setContent($content);
 
@@ -118,7 +122,7 @@ class HooksListener
                         $tag = $matches[1];
                         $attributes = $matches[2];
 
-                        $attributes = preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
+                        $attributes = \preg_replace('/class="([^"]+)"/', 'class="$1 ' . $classes . '"', $attributes, 1, $count);
                         if (0 === $count) {
                             $attributes .= ' class="' . $classes . '"';
                         }
@@ -200,16 +204,17 @@ class HooksListener
         if ((int)$arrData['hasParallaxBackgroundImage'] === 1) {
 
             $imageInterface = $this->getImage($arrData['singleSRC'], $arrData['size']);
-            if ($imageInterface !== null) {
+            if (\is_array($imageInterface) && \count($imageInterface) > 0) {
 
                 $this->addAssets = true;
 
                 $templateBackgroundImage = new FrontendTemplate('parallax_container');
 
                 $templateBackgroundImage->isParallax = ((int)$arrData['isParallax'] === 1 ? 1 : 0);
-                $templateBackgroundImage->src = Environment::get('base') . $imageInterface->getUrl($this->rootDir);
-                $templateBackgroundImage->srcHeight = $imageInterface->getDimensions()->getSize()->getHeight();
-                $templateBackgroundImage->srcWidth = $imageInterface->getDimensions()->getSize()->getWidth();
+                $templateBackgroundImage->src = $imageInterface['base']['src'];
+                $templateBackgroundImage->srcHeight = $imageInterface['base']['width'];
+                $templateBackgroundImage->srcWidth = $imageInterface['base']['height'];
+                $templateBackgroundImage->mediaQueries = $imageInterface['mediaQueries'] ?? '';
                 $templateBackgroundImage->hAlign = ($arrData['hAlign'] !== '') ? $arrData['hAlign'] : 'center';
                 $templateBackgroundImage->vAlign = ($arrData['vAlign'] !== '') ? $arrData['vAlign'] : 'center';
                 $templateBackgroundImage->sizemodus = ($arrData['sizemodus'] !== '') ? $arrData['sizemodus'] : 'auto';
@@ -275,9 +280,9 @@ class HooksListener
         }
 
         if (
-            'html' !== $request->getRequestFormat() ||
-            !str_contains((string)$response->headers->get('Content-Type'), 'text/html') ||
-            false !== stripos((string)$response->headers->get('Content-Disposition'), 'attachment;')
+            'html' !== $request->getRequestFormat()
+            || ($response->headers->has('Content-Type') && !\str_contains((string)$response->headers->get('Content-Type'), 'text/html'))
+            || false !== \stripos((string)$response->headers->get('Content-Disposition'), 'attachment;')
         ) {
             return false;
         }
@@ -293,9 +298,9 @@ class HooksListener
     /**
      * @param string $path
      * @param string $size
-     * @return ImageInterface|null
+     * @return array|null
      */
-    private function getImage(string $path, string $size = ''): ?ImageInterface
+    private function getImage(string $path, string $size = ''): ?array
     {
         try {
 
@@ -304,7 +309,60 @@ class HooksListener
                 throw new \Exception();
             }
 
-            return $this->imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size));
+            $imageInterface = $this->imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size));
+
+            $figureBuilder = $this->studio->createFigureBuilder()->setSize($size);
+            $figure = $figureBuilder->from($objImageModel->path)->buildIfResourceExists();
+
+            $imgSources = $figure->getImage()->getSources();
+
+            $srcSet = [
+                'base' => [
+                    'src' => Environment::get('base') . \ltrim($imageInterface->getUrl($this->rootDir), '/'),
+                    'width' => $imageInterface->getDimensions()->getSize()->getHeight(),
+                    'height' => $imageInterface->getDimensions()->getSize()->getWidth()
+                ],
+                'mediaQueries' => null
+            ];
+
+            $queries = [];
+            foreach ($imgSources as $imgSource) {
+
+                if (!isset($imgSource['src'], $imgSource['width'], $imgSource['height'])) {
+                    continue;
+                }
+
+                if (
+                    $imgSource['width'] === $imageInterface->getDimensions()->getSize()->getWidth() &&
+                    $imgSource['height'] === $imageInterface->getDimensions()->getSize()->getHeight()
+                ) {
+
+                    $srcSet['base'] = [
+                        'src' => Environment::get('base') . \ltrim($imgSource['src'], '/'),
+                        'width' => $imgSource['width'],
+                        'height' => $imgSource['height']
+                    ];
+
+                }
+
+                if (!isset($imgSource['media'])) {
+                    continue;
+                }
+
+                $queries[] = [
+                    'src' => Environment::get('base') . \ltrim($imgSource['src'], '/'),
+                    'width' => (int)$imgSource['width'],
+                    'height' => (int)$imgSource['height'],
+                    'media' => $imgSource['media']
+                ];
+
+            }
+
+            if (\count($queries) > 0) {
+                $srcSet['mediaQueries'] = \json_encode($queries, JSON_THROW_ON_ERROR);
+            }
+
+            return $srcSet;
 
         } catch (\Exception) {
             return null;
