@@ -154,8 +154,6 @@ export default class ParallaxController extends Controller {
                         src = query.src;
                         srcHeight = query.height;
 
-                        console.log('addnew src', src);
-
                         break;
                     }
                 }
