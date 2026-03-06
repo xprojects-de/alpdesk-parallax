@@ -125,7 +125,12 @@ export default class ParallaxController extends Controller {
         const node = this.element;
 
         const parallaxActive = this.isparallaxValue;
-        const sizeModus = this.sizemodusValue;
+
+        let sizeModus = this.sizemodusValue;
+        if (sizeModus === 'fitWidth') {
+            sizeModus = '100% auto'
+        }
+
         const hAlign = this.halignValue;
         const vAlign = this.valignValue;
 

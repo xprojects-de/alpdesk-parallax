@@ -23,7 +23,9 @@ $GLOBALS['TL_LANG']['tl_article']['vAlign_options'] = [
 ];
 $GLOBALS['TL_LANG']['tl_article']['sizemodus_options'] = [
     'auto' => 'automatisch',
-    'cover' => 'füllend'
+    'cover' => 'füllend',
+    'contain' => 'an Container anpassen',
+    'fitWidth' => 'an Breite anpassen'
 ];
 $GLOBALS['TL_LANG']['tl_article']['vParallax_options'] = [
     'left' => 'nach links bewegen',
