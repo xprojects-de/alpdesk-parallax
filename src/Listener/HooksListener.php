@@ -11,7 +11,6 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\FrontendTemplate;
 use Contao\FilesModel;
 use Contao\Environment;
-use Contao\Image\ImageInterface;
 use Contao\StringUtil;
 use Contao\Validator;
 use Contao\ContentModel;
@@ -212,7 +211,7 @@ class HooksListener
                 $templateBackgroundImage = new FrontendTemplate('parallax_container');
 
                 $templateBackgroundImage->isParallax = ((int)$arrData['isParallax'] === 1 ? 1 : 0);
-                $templateBackgroundImage->src = Environment::get('base') . $imageInterface['base']['src'];
+                $templateBackgroundImage->src = $imageInterface['base']['src'];
                 $templateBackgroundImage->srcHeight = $imageInterface['base']['width'];
                 $templateBackgroundImage->srcWidth = $imageInterface['base']['height'];
                 $templateBackgroundImage->mediaQueries = $imageInterface['mediaQueries'] ?? '';
@@ -312,20 +311,52 @@ class HooksListener
 
             $imageInterface = $this->imageFactory->create($this->rootDir . '/' . $objImageModel->path, StringUtil::deserialize($size));
 
+            $figureBuilder = $this->studio->createFigureBuilder()->setSize($size);
+            $figure = $figureBuilder->from($objImageModel->path)->buildIfResourceExists();
+
+            $imgSources = $figure->getImage()->getSources();
+
             $srcSet = [
                 'base' => [
-                    'src' => $imageInterface->getUrl($this->rootDir),
+                    'src' => Environment::get('base') . \ltrim($imageInterface->getUrl($this->rootDir), '/'),
                     'width' => $imageInterface->getDimensions()->getSize()->getHeight(),
                     'height' => $imageInterface->getDimensions()->getSize()->getWidth()
                 ],
                 'mediaQueries' => null
             ];
 
-            $figureBuilder = $this->studio->createFigureBuilder()->setSize($size);
-            $figure = $figureBuilder->from($objImageModel->path)->buildIfResourceExists();
+            $queries = [];
+            foreach ($imgSources as $imgSource) {
 
-            $picture = $figure->getLegacyTemplateData();
-            $queries = $this->compileMediaQueries($picture['picture']);
+                if (!isset($imgSource['src'], $imgSource['width'], $imgSource['height'])) {
+                    continue;
+                }
+
+                if (
+                    $imgSource['width'] === $imageInterface->getDimensions()->getSize()->getWidth() &&
+                    $imgSource['height'] === $imageInterface->getDimensions()->getSize()->getHeight()
+                ) {
+
+                    $srcSet['base'] = [
+                        'src' => Environment::get('base') . \ltrim($imgSource['src'], '/'),
+                        'width' => $imgSource['width'],
+                        'height' => $imgSource['height']
+                    ];
+
+                }
+
+                if (!isset($imgSource['media'])) {
+                    continue;
+                }
+
+                $queries[] = [
+                    'src' => Environment::get('base') . \ltrim($imgSource['src'], '/'),
+                    'width' => (int)$imgSource['width'],
+                    'height' => (int)$imgSource['height'],
+                    'media' => $imgSource['media']
+                ];
+
+            }
 
             if (\count($queries) > 0) {
                 $srcSet['mediaQueries'] = \json_encode($queries, JSON_THROW_ON_ERROR);
@@ -336,37 +367,6 @@ class HooksListener
         } catch (\Exception) {
             return null;
         }
-
-    }
-
-    /**
-     * @param array $picture
-     * @return array
-     */
-    private function compileMediaQueries(array $picture): array
-    {
-        $mediaQueries = [];
-
-        if (\is_array($picture['sources'])) {
-
-            foreach ($picture['sources'] as $value) {
-
-                if (!isset($value['src'], $value['width'], $value['height'], $value['media'])) {
-                    continue;
-                }
-
-                $mediaQueries[] = [
-                    'src' => $value['src'],
-                    'width' => (int)$value['width'],
-                    'height' => (int)$value['height'],
-                    'media' => $value['media']
-                ];
-
-            }
-
-        }
-
-        return $mediaQueries;
 
     }
 
