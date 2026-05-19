@@ -40,10 +40,10 @@ $GLOBALS['TL_DCA']['tl_alpdeskanimations'] = [
         ],
         'operations' => [
             'edit',
-            'editheader',
+            'children',
             'copy',
-            'toggle',
-            'delete'
+            'delete',
+            'toggle'
         ]
     ],
     'palettes' => [
